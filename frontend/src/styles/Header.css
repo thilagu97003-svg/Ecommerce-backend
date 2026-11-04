@@ -422,3 +422,192 @@ header,
   overflow-wrap: anywhere;
   border-bottom: 1px solid #e5e7eb;
 }
+/* ===== FIGMA MATCH: header ===== */
+.brand-title {
+  font-size: 34px;
+  padding-bottom: 13px;
+}
+
+.brand-navigation {
+  padding-top: 18px;
+}
+
+.category-navigation {
+  gap: 40px;
+  padding: 22.5px 0;
+}
+
+.cart-badge {
+  top: -9px;
+  right: -9px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0;
+  color: #e00000;
+  font-size: 9px;
+}
+
+@media (min-width: 1001px) {
+  .top-header {
+    justify-content: flex-start;
+    gap: 28px;
+  }
+
+  .header-search {
+    width: 453px;
+    min-width: 0;
+    height: 37px;
+    padding: 0 14px;
+    gap: 14px;
+  }
+
+  .header-search input {
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .header-search input::placeholder {
+    color: #777777;
+    font-weight: 700;
+  }
+
+  .header-links {
+    margin-left: auto;
+    flex-wrap: nowrap;
+    gap: 14px;
+  }
+
+  .header-links a {
+    font-size: 18px;
+    font-weight: 400;
+  }
+}
+/* ===== FIGMA MATCH: Brands + Offers dropdown ===== */
+.brand-navigation {
+  position: relative;
+}
+
+/* ---- Brands: full width, left aligned, 9 columns ---- */
+.category-item.brands-menu {
+  position: static;
+}
+
+.brands-menu .brands-mega-menu {
+  left: 0;
+  right: 0;
+  top: 100%;
+  width: auto;
+  min-height: 0;
+  transform: none;
+  display: grid;
+  grid-template-columns: 188fr 154fr 160fr 148fr 162fr 152fr 110fr 121fr 123fr;
+  gap: 0;
+  padding: 0 0 22px 48px;
+  box-shadow: none;
+  text-align: left;
+}
+
+/* mouse link la irundhu menu ku pogum podhu menu close aagaama irukka */
+.brands-mega-menu::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -42px;
+  height: 42px;
+}
+
+.brands-mega-menu .brand-group + .brand-group {
+  margin-top: 12px;
+}
+
+.brands-mega-menu .brand-col h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 19px;
+  text-align: left;
+  color: #000;
+}
+
+.brands-mega-menu .brand-col a {
+  display: block;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left;
+  white-space: nowrap;
+  color: #000;
+}
+
+.brands-mega-menu .brand-col a:hover {
+  color: #c92020;
+}
+
+/* ---- Offers: small box, left edge = Offers link ---- */
+.category-item.offers-menu .offers-mega-menu {
+  top: calc(100% + 34px);
+  left: 0;
+  transform: none;
+  width: 206px;
+  min-height: 0;
+  padding: 9px 19px 24px;
+  display: block;
+  text-align: left;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.offers-mega-menu::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -34px;
+  height: 34px;
+}
+
+.offers-mega-menu .mega-column {
+  gap: 0;
+}
+
+.offers-mega-menu .mega-column h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left;
+  color: #000;
+}
+
+.offers-mega-menu .mega-column a {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left;
+  white-space: nowrap;
+  color: #000;
+}
+
+.offers-mega-menu .mega-column a:hover {
+  color: #c92020;
+}
+
+@media (max-width: 1000px) {
+  .brands-menu .brands-mega-menu {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 16px;
+  }
+}
+/* ===== Header links font size fix (Figma) ===== */
+@media (min-width: 1001px) {
+  .header-links a {
+    font-size: 16px;
+  }
+}
+/* ===== Mobile: mega menu page-a wider aakkaadhu ===== */
+@media (max-width: 1000px) {
+  .brand-navigation {
+    overflow-x: clip;
+  }
+}

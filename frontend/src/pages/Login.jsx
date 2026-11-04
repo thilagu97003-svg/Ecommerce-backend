@@ -2,11 +2,16 @@ import { useState } from "react";
 import "../styles/Login.css";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
+import PopupMessage from "../components/PopupMessage";
+import { API_BASE } from "../config"; 
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("error");
+  const [popup, setPopup] = useState(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -17,13 +22,25 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-    const redirectAfterLogin = () => {
+  const showMessage = (text, type = "error") => {
+    setMessage(text);
+    setMessageType(type);
+  };
+
+   const redirectAfterLogin = () => {
     const checkoutItems = location.state?.items;
 
     if (checkoutItems?.length) {
       navigate("/checkout", {
         state: { items: checkoutItems },
       });
+      return;
+    }
+
+    const returnTo = location.state?.returnTo;
+
+    if (returnTo) {
+      navigate(returnTo);
       return;
     }
 
@@ -38,16 +55,26 @@ function Login() {
     }
   };
 
+  const showLoginSuccess = (text) => {
+    setPopup({
+      type: "success",
+      title: "Login Successful!",
+      message: text,
+      buttonText: "Continue",
+      closeOnOverlay: false,
+      onClose: redirectAfterLogin,
+    });
+  };
+
   const googleLogin = useGoogleLogin({
     onSuccess: (tokenResponse) => {
       localStorage.setItem(
         "stepup_google_user",
         JSON.stringify(tokenResponse)
       );
-      alert("Google login successful!");
-      redirectAfterLogin();
+      showLoginSuccess("You have signed in with Google. Welcome to StepUp.in!");
     },
-    onError: () => setMessage("Google login failed. Please try again."),
+    onError: () => showMessage("Google login failed. Please try again."),
   });
 
   const handleChange = (e) => {
@@ -60,65 +87,65 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setMessage("");
+    e.preventDefault();
+    setMessage("");
 
-  if (isRegister && form.password !== form.confirmPassword) {
-    setMessage("Passwords do not match. Please try again.");
-    return;
-  }
-
-  const endpoint = isRegister
-    ? "http://127.0.0.1:8000/api/register/"
-    : "http://127.0.0.1:8000/api/login/";
-
-  const payload = isRegister
-    ? {
-        username: form.name.trim(),
-        email: form.email.trim(),
-        password: form.password,
-      }
-    : {
-        email: form.email.trim(),
-        password: form.password,
-      };
-
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json();
-    console.log("Login response:", data);
-
-    if (!response.ok) {
-      setMessage(data.error || "Request failed. Please try again.");
+    if (isRegister && form.password !== form.confirmPassword) {
+      showMessage("Passwords do not match. Please try again.");
       return;
     }
 
-    if (isRegister) {
-      setForm({
-        name: "",
-        email: form.email,
-        password: "",
-        confirmPassword: "",
+    const endpoint = isRegister
+      ? `${API_BASE}/api/register/`
+      : `${API_BASE}/api/login/`;
+
+    const payload = isRegister
+      ? {
+          username: form.name.trim(),
+          email: form.email.trim(),
+          password: form.password,
+        }
+      : {
+          email: form.email.trim(),
+          password: form.password,
+        };
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-      setIsRegister(false);
-      setMessage("Registration successful! Please log in.");
-      return;
-    }
 
-   localStorage.setItem("stepup_logged_in", JSON.stringify(data.user));
-localStorage.setItem("stepup_access_token", data.access);
-localStorage.setItem("stepup_refresh_token", data.refresh);
-    alert("Successfully logged in!");
-    redirectAfterLogin();
-  } catch (error) {
-    setMessage("Backend connection failed. Please check the Django server.");
-  }
-};
+      const data = await response.json();
+
+      if (!response.ok) {
+        showMessage(data.error || "Request failed. Please try again.");
+        return;
+      }
+
+      if (isRegister) {
+        setForm({
+          name: "",
+          email: form.email,
+          password: "",
+          confirmPassword: "",
+        });
+        setIsRegister(false);
+        showMessage("Registration successful! Please log in.", "success");
+        return;
+      }
+
+      localStorage.setItem("stepup_logged_in", JSON.stringify(data.user));
+      localStorage.setItem("stepup_access_token", data.access);
+      localStorage.setItem("stepup_refresh_token", data.refresh);
+
+      showLoginSuccess("You have logged in successfully. Welcome back!");
+    } catch (error) {
+      showMessage("Backend connection failed. Please check the Django server.");
+    }
+  };
+
   return (
     <section className="login-page">
       <div className="login-card">
@@ -140,7 +167,9 @@ localStorage.setItem("stepup_refresh_token", data.refresh);
           </button>
         </div>
 
-        {message && <p className="login-message">{message}</p>}
+        {message && (
+          <p className={`login-message ${messageType}`}>{message}</p>
+        )}
 
         <form className="login-form" onSubmit={handleSubmit}>
           {isRegister && (
@@ -157,7 +186,7 @@ localStorage.setItem("stepup_refresh_token", data.refresh);
           )}
 
           <div className="field">
-            <label>Email Id</label>
+            <label>Email id</label>
             <input
               type="email"
               name="email"
@@ -183,9 +212,10 @@ localStorage.setItem("stepup_refresh_token", data.refresh);
               <button
                 type="button"
                 className="eye"
+                aria-label={showPassword ? "Hide password" : "Show password"}
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? "🙈" : "👁"}
+                {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
               </button>
             </div>
 
@@ -210,9 +240,10 @@ localStorage.setItem("stepup_refresh_token", data.refresh);
                 <button
                   type="button"
                   className="eye"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? "🙈" : "👁"}
+                  {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                 </button>
               </div>
             </div>
@@ -259,7 +290,9 @@ localStorage.setItem("stepup_refresh_token", data.refresh);
             </p>
           </>
         )}
-           </div>
+      </div>
+
+      {popup && <PopupMessage {...popup} />}
     </section>
   );
 }

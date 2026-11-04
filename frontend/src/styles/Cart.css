@@ -341,3 +341,255 @@
     width: 100%;
   }
 }
+/* ===== FIGMA MATCH: Cart page (1366px) ===== */
+.cart-page {
+  width: 904px;
+  max-width: calc(100% - 32px);
+  padding: 18px 0 70px;
+}
+
+.cart-title {
+  margin: 0 0 46px;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 40px;
+  text-align: center;
+}
+
+/* ---- delivery bar: 904 x 56 ---- */
+.cart-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 56px;
+  margin: 0 0 45px;
+  border: 1px solid #000;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.3);
+  font-size: 17px;
+  line-height: 20px;
+}
+
+/* ---- item row ---- */
+.cart-item {
+  display: grid;
+  grid-template-columns: 187px 256px 188px 1fr;
+  align-items: start;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #000;
+}
+
+.cart-item + .cart-item {
+  padding-top: 24px;
+}
+
+.ci-img {
+  display: block;
+  width: 187px;
+  height: 161px;
+  object-fit: cover;
+  background: #f1f1f1;
+}
+
+.ci-info {
+  padding-left: 25px;
+}
+
+.ci-brand {
+  margin: -2px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.ci-name {
+  margin: 0;
+  font-size: 17px;
+  line-height: 19px;
+}
+
+.ci-price {
+  margin: 18px 0 0;
+  font-size: 17px;
+  line-height: 19px;
+}
+
+.ci-selects {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.ci-select {
+  width: 188px;
+  height: 37px;
+  padding: 0 10px;
+  border: 1px solid #000;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font-family: inherit;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.ci-remove {
+  display: inline-flex;
+  align-items: center;
+  align-self: start;
+  gap: 10px;
+  height: 37px;
+  margin-left: 35px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #000;
+  font-family: inherit;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.ci-remove:hover {
+  color: #e00000;
+}
+
+/* ---- summary rows ---- */
+.cs-rows {
+  position: relative;
+  padding: 12px 0 1px;
+  border-bottom: 1px solid #000;
+}
+
+.cs-row {
+  display: grid;
+  grid-template-columns: 127px 1fr;
+  font-size: 17px;
+  line-height: 30px;
+}
+
+.cs-info {
+  position: absolute;
+  right: 21px;
+  bottom: 1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #2f4f4f;
+  font-size: 17px;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.cs-info:hover {
+  text-decoration: underline;
+}
+
+/* ---- checkout + express ---- */
+.cs-checkout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 602px;
+  max-width: 100%;
+  height: 38px;
+  margin: 30px auto 0;
+  border: 0;
+  background: #2f4f4f;
+  color: #fff;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cs-checkout:hover {
+  background: #3d6666;
+}
+
+.cs-express {
+  width: 602px;
+  max-width: 100%;
+  margin: 14px auto 0;
+}
+
+.cs-express h2 {
+  margin: 0 0 14px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.cs-pay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 38px;
+  margin-bottom: 12px;
+  border: 1px solid #000;
+  background: #fff;
+  cursor: pointer;
+}
+
+.cs-pay:hover {
+  background: #f5f5f5;
+}
+
+.gp-g {
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #4285f4;
+}
+
+.gp-pay {
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #5f6368;
+}
+
+/* ---- tablet / mobile ---- */
+@media (max-width: 900px) {
+  .cart-item {
+    grid-template-columns: 140px 1fr;
+    row-gap: 14px;
+  }
+
+  .ci-img {
+    width: 140px;
+    height: 120px;
+  }
+
+  .ci-selects {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .ci-select {
+    width: min(188px, 100%);
+  }
+
+  .ci-remove {
+    grid-column: 1 / -1;
+    margin-left: 0;
+  }
+
+  .cart-bar {
+    flex-direction: column;
+    gap: 2px;
+    height: auto;
+    padding: 10px 14px;
+    text-align: center;
+  }
+
+  .cs-info {
+    position: static;
+    margin-top: 6px;
+  }
+}

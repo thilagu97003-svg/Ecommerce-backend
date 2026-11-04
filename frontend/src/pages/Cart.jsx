@@ -1,45 +1,76 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Cart.css";
+import { Lock, Trash2, Truck } from "lucide-react";
 import axios from "axios";
+import "../styles/Cart.css";
+import { API_BASE } from "../config"; 
 
-const parseInfo = (desc = "") => {
-  const r = desc.match(/Rating:\s*(\d)/);
-  return {
-    rating: r ? Number(r[1]) : 0,
-    colors: desc.match(/#[0-9a-fA-F]{6}/g) || [],
+const SIZES = [4, 5, 6, 7, 8, 9, 10, 11, 12];
+const QUANTITIES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+function useDayCountdown() {
+  const calc = () => {
+    const now = new Date();
+    const end = new Date(now);
+    end.setHours(24, 0, 0, 0);
+    const total = Math.max(0, Math.floor((end - now) / 1000));
+    return {
+      h: Math.floor(total / 3600),
+      m: Math.floor((total % 3600) / 60),
+      s: total % 60,
+    };
   };
-};
+
+  const [left, setLeft] = useState(calc);
+
+  useEffect(() => {
+    const timer = setInterval(() => setLeft(calc()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return left;
+}
+
+function splitName(item) {
+  if (item.brand) return [item.brand, item.name || ""];
+  const words = (item.name || "").split(" ");
+  return [words.slice(0, 2).join(" "), words.slice(2).join(" ")];
+}
 
 function Cart() {
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
+  const left = useDayCountdown();
 
   const handleProceedToCheckout = (item) => {
-    navigate("/login", {
-      state: { items: item ? [item] : cart },
-    });
+    const items = item ? [item] : cart;
+    const hasToken = Boolean(localStorage.getItem("stepup_access_token"));
+
+    navigate(hasToken ? "/checkout" : "/login", { state: { items } });
   };
 
   const loadCart = async () => {
     const token = localStorage.getItem("stepup_access_token");
 
     if (!token) {
-      setCart([]);
+      const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+      setCart(localCart);
       return;
     }
 
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/cart/", {
+      const response = await axios.get(`${API_BASE}/api/cart/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Cart API response:", response.data);
-      setCart(response.data.items || []);
+      const items = response.data.items || [];
+      setCart(items);
+      localStorage.setItem("cart", JSON.stringify(items));
     } catch (error) {
       console.error("Cart load failed:", error.response?.data || error);
-      setCart([]);
+      const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+      setCart(localCart);
     }
   };
 
@@ -53,76 +84,89 @@ function Cart() {
       window.removeEventListener("cartUpdated", handleCartUpdate);
     };
   }, []);
+  const saveLocal = (updatedCart) => {
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
 
   const updateQuantity = async (index, newQuantity) => {
     const item = cart[index];
     const token = localStorage.getItem("stepup_access_token");
 
-    try {
-      await axios.patch(
-        `http://127.0.0.1:8000/api/cart/${item.cart_item_id}/`,
-        { quantity: newQuantity },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    saveLocal(
+      cart.map((c, i) => (i === index ? { ...c, quantity: newQuantity } : c))
+    );
 
-      await loadCart();
-    } catch (error) {
-      console.error(
-        "Quantity update failed:",
-        error.response?.data || error
-      );
-      alert("Could not update quantity.");
+    if (token && item.cart_item_id) {
+      try {
+        await axios.patch(
+          `${API_BASE}/api/cart/${item.cart_item_id}/`,
+          { quantity: Number(newQuantity) },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } catch (error) {
+        console.error(
+          "Quantity update failed in backend:",
+          error.response?.status,
+          error.response?.data || error
+        );
+        return;
+      }
     }
+
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const updateSize = async (index, newSize) => {
     const item = cart[index];
     const token = localStorage.getItem("stepup_access_token");
 
-    try {
-      await axios.patch(
-        `http://127.0.0.1:8000/api/cart/${item.cart_item_id}/`,
-        { size: newSize },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    saveLocal(
+      cart.map((c, i) => (i === index ? { ...c, size: String(newSize) } : c))
+    );
 
-      await loadCart();
-    } catch (error) {
-      console.error("Size update failed:", error.response?.data || error);
-      alert("Could not update size.");
+    if (token && item.cart_item_id) {
+      try {
+        await axios.patch(
+          `${API_BASE}/api/cart/${item.cart_item_id}/`,
+          { size: String(newSize) },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } catch (error) {
+        console.error(
+          "Size update failed in backend:",
+          error.response?.status,
+          error.response?.data || error
+        );
+        return;
+      }
     }
+
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
-  const removeItem = async (item) => {
+  const removeItem = async (item, index) => {
     const token = localStorage.getItem("stepup_access_token");
 
-    try {
-      await axios.delete(
-        `http://127.0.0.1:8000/api/cart/${item.cart_item_id}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    saveLocal(cart.filter((_, i) => i !== index));
 
-      await loadCart();
-    } catch (error) {
-      console.error(
-        "Remove item failed:",
-        error.response?.status,
-        error.response?.data
-      );
-      alert("Could not remove item.");
+    if (token && item.cart_item_id) {
+      try {
+        await axios.delete(
+          `${API_BASE}/api/cart/${item.cart_item_id}/`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } catch (error) {
+        console.error(
+          "Remove item failed in backend:",
+          error.response?.status,
+          error.response?.data || error
+        );
+        return;
+      }
     }
+
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const subtotal = cart.reduce(
@@ -130,215 +174,126 @@ function Cart() {
     0
   );
 
-  const delivery = 0;
-  const total = subtotal + delivery;
-  const formatPrice = (price) => `₹${price.toLocaleString("en-IN")}`;
+  const formatPrice = (price) => `₹ ${Number(price).toLocaleString("en-IN")}`;
 
   return (
     <main className="cart-page">
-      <button className="cart-back-btn" onClick={() => navigate(-1)}>
-        ← Back
-      </button>
-
-      <h1 className="cart-title">My Cart</h1>
+      <h1 className="cart-title">Your Cart</h1>
 
       {cart.length === 0 ? (
         <div className="cart-empty">
           <p>Your shopping cart is empty.</p>
-          <button onClick={() => navigate("/kids")}>
-            Continue Shopping
-          </button>
+          <button onClick={() => navigate("/mens")}>Continue Shopping</button>
         </div>
       ) : (
         <>
-          <p className="cart-delivery-message">
-            Free &amp; Fast arriving by Monday ordr within 23 hours,53
-            minutes,50seconds
-          </p>
+          <div className="cart-bar">
+            <strong>Free &amp; Fast arriving by Monday</strong>
+            <span>
+              Order within {left.h} hours,{left.m} minutes,{left.s} seconds
+            </span>
+          </div>
 
-          <section className="cart-table" aria-label="Shopping cart">
-            <div className="cart-table-header">
-              <span>Product</span>
-              <span>Size</span>
-              <span>Quantity</span>
-              <span>Unit Price</span>
-              <span>Total Price</span>
-              <span>Checkout</span>
-            </div>
-
+          <section aria-label="Shopping cart">
             {cart.map((item, index) => {
+              const [brand, productName] = splitName(item);
               const quantity = Number(item.quantity || 1);
-              const price = Number(item.price || 0);
-              const itemTotal = price * quantity;
 
               return (
                 <article
-                  className="cart-table-row"
-                  key={item.cart_item_id}
+                  className="cart-item"
+                  key={item.cart_item_id || item.id || index}
                 >
-                  <div className="cart-product-cell">
-                    {item.image ? (
-                      <img
-                        className="cart-item-image"
-                        src={
-                          item.image.startsWith("http")
-                            ? item.image
-                            : `http://127.0.0.1:8000${item.image}`
-                        }
-                        alt={item.name || "Product"}
-                        onError={(event) => {
-                          event.currentTarget.style.display = "none";
-                        }}
-                      />
-                    ) : (
-                      <div className="cart-item-image cart-image-placeholder">
-                        Image unavailable
-                      </div>
-                    )}
+                  {item.image ? (
+                    <img
+                      className="ci-img"
+                      src={
+                        item.image.startsWith("http")
+                          ? item.image
+                          : `${API_BASE}${item.image}`
+                      }
+                      alt={item.name || "Product"}
+                      onError={(event) => {
+                        event.currentTarget.style.visibility = "hidden";
+                      }}
+                    />
+                  ) : (
+                    <div className="ci-img ci-img-empty" />
+                  )}
 
-                    <div className="cart-item-info">
-                      <h3>{item.name}</h3>
-                     <p>{item.category}</p>
-{(() => {
-  const { rating, colors } = parseInfo(item.description);
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      <span style={{ color: "#f5a623" }}>
-        {"★".repeat(rating)}
-        <span style={{ color: "#ccc" }}>{"★".repeat(5 - rating)}</span>
-      </span>
-      {colors.map((c) => (
-        <span
-          key={c}
-          style={{
-            width: 14,
-            height: 14,
-            borderRadius: "50%",
-            background: c,
-            border: "1px solid #999",
-            display: "inline-block",
-          }}
-        />
-      ))}
-    </div>
-  );
-})()}
-                      <span className="cart-stock">● In Stock</span>
-                      <button
-                        className="cart-remove-btn"
-                        onClick={() => removeItem(item)}
-                      >
-                        Remove
-                      </button>
-                    </div>
+                  <div className="ci-info">
+                    <h3 className="ci-brand">{brand}</h3>
+                    <p className="ci-name">{productName}</p>
+                    <p className="ci-price">MRP{formatPrice(item.price || 0)}</p>
                   </div>
 
-                  <div className="cart-size-cell">
-                    {item.size ? (
-                      <select
-                        className="cart-size-select"
-                        value={item.size}
-                        onChange={(event) =>
-                          updateSize(index, Number(event.target.value))
-                        }
-                        aria-label={`Select size for ${item.name}`}
-                      >
-                        {[4, 5, 6, 7, 8, 9, 10, 11, 12].map((size) => (
-                          <option key={size} value={size}>
-                            {size}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <span>—</span>
-                    )}
-                  </div>
-
-                  <div className="cart-quantity-cell">
-                    <div className="cart-quantity-stepper">
-                      <button
-                        type="button"
-                        aria-label="Decrease quantity"
-                        disabled={quantity <= 1}
-                        onClick={() => updateQuantity(index, quantity - 1)}
-                      >
-                        −
-                      </button>
-
-                      <span>{quantity}</span>
-
-                      <button
-                        type="button"
-                        aria-label="Increase quantity"
-                        disabled={quantity >= 10}
-                        onClick={() => updateQuantity(index, quantity + 1)}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="cart-price-cell">{formatPrice(price)}</div>
-
-                  <div className="cart-price-cell cart-item-total">
-                    {formatPrice(itemTotal)}
-                  </div>
-
-                  <div className="cart-row-checkout">
-                    <button
-                      className="cart-checkout-btn"
-                      onClick={() => handleProceedToCheckout(item)}
+                  <div className="ci-selects">
+                    <select
+                      className="ci-select"
+                      value={item.size || "8"}
+                      onChange={(event) => updateSize(index, event.target.value)}
+                      aria-label={`Select size for ${item.name}`}
                     >
-                      Proceed to Checkout
-                    </button>
+                      {SIZES.map((size) => (
+                        <option key={size} value={size}>
+                          Size ({size})
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      className="ci-select"
+                      value={quantity}
+                      onChange={(event) =>
+                        updateQuantity(index, Number(event.target.value))
+                      }
+                      aria-label={`Select quantity for ${item.name}`}
+                    >
+                      {QUANTITIES.map((q) => (
+                        <option key={q} value={q}>
+                          Quantity ({q})
+                        </option>
+                      ))}
+                    </select>
                   </div>
+
+                  <button
+                    type="button"
+                    className="ci-remove"
+                    onClick={() => removeItem(item, index)}
+                  >
+                    Remove <Trash2 size={20} />
+                  </button>
                 </article>
               );
             })}
           </section>
 
-          <div className="cart-bottom">
-            <button
-              className="cart-continue-btn"
-              onClick={() => navigate("/womens")}
-            >
-              ← Continue Shopping
-            </button>
+          <section className="cs-rows" aria-label="Order summary">
+            <div className="cs-row">
+              <span>Summary</span>
+            </div>
+            <div className="cs-row">
+              <span>Total</span>
+              <span>{formatPrice(subtotal)}</span>
+            </div>
+            <div className="cs-row">
+              <span>Delivery</span>
+              <span>Free</span>
+            </div>
 
-            <section className="cart-summary">
-              <h2>Summary</h2>
+            <a className="cs-info" href="#delivery-info" onClick={(e) => e.preventDefault()}>
+              Delivery &amp; return information <Truck size={22} />
+            </a>
+          </section>
 
-              <p>
-                <span>Subtotal</span>
-                <strong>{formatPrice(subtotal)}</strong>
-              </p>
-
-              <div className="cart-delivery-row">
-                <span>Delivery</span>
-                <strong>Free</strong>
-                <a
-                  className="delivery-info"
-                  href="/delivery-information"
-                >
-                  Delivery &amp; return information <span aria-hidden="true">🚚</span>
-                </a>
-              </div>
-
-              <hr />
-
-              <p className="cart-total">
-                <strong>Total</strong>
-                <strong>{formatPrice(total)}</strong>
-              </p>
-
-              <button
-                className="cart-checkout-btn"
-                onClick={() => handleProceedToCheckout()}
-              >
-                🔒 Checkout Securely
-              </button>
-            </section>
-          </div>
+          <button
+            type="button"
+            className="cs-checkout"
+            onClick={() => handleProceedToCheckout()}
+          >
+            <Lock size={20} /> Checkout Securely
+          </button>
         </>
       )}
     </main>

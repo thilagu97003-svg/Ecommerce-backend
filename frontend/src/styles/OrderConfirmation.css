@@ -249,5 +249,19 @@
   background: var(--stepup-green);
   color: #fff;
 }
+.confirmation-product-image {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #f2f2f2;
+}
+
+@media (max-width: 650px) {
+  .confirmation-product-image {
+    width: 54px;
+    height: 54px;
+  }
+}
 
 

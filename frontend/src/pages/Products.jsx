@@ -1,8 +1,14 @@
-
-import "../styles/Products.css";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import "../styles/Products.css";
+import { API_BASE } from "../config"; 
 
-const products = [
+const API = `${API_BASE}`;
+
+// Old hard-coded list: now used ONLY to get the rating and a fallback image
+// (matched by product name). The real product id always comes from the API,
+// so every card opens its own detail page.
+const LOCAL_PRODUCTS = [
   { id: 1, name: "Lamar Tan Women’s Lace Sandal", price: 2799, rating: 5, category: "women" },
   { id: 2, name: "Lilley White Diamante Slip-On Shoe", price: 2799, rating: 4, category: "women" },
   { id: 3, name: "Softlines Navy Sandal", price: 2999, rating: 3, category: "women" },
@@ -43,10 +49,25 @@ const products = [
   { id: 12, name: "Shoeszone Kids Unicorn Welly", price: 3999, rating: 5, category: "kids" },
 ];
 
-function getImagePath(product) {
-  if (product.category === "kids") return `/images/kids${product.id}.png`;
-  if (product.category === "men") return `/images/men${product.id}.png`;
-  return `/images/women${product.id}.jpg`;
+const CATEGORY_KEY = {
+  women: "women",
+  womens: "women",
+  men: "men",
+  mens: "men",
+  kids: "kids",
+  kid: "kids",
+};
+
+function getLocalImage(category, id) {
+  if (category === "kids") return `/images/kids${id}.png`;
+  if (category === "men") return `/images/men${id}.png`;
+  return `/images/women${id}.jpg`;
+}
+
+function getApiImage(image) {
+  if (!image) return "";
+  if (image.startsWith("http")) return image;
+  return `${API}/media/${image.replace(/^\/?media\//, "")}`;
 }
 
 function getDetailsPath(product) {
@@ -57,38 +78,75 @@ function getDetailsPath(product) {
 
 function Products() {
   const [searchParams] = useSearchParams();
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
   const search = searchParams.get("search")?.trim().toLowerCase() || "";
+  const rawCategory = searchParams.get("category")?.trim().toLowerCase() || "";
+  const category = CATEGORY_KEY[rawCategory] || rawCategory;
 
+  useEffect(() => {
+    fetch(`${API}/api/products/`)
+      .then((res) => res.json())
+      .then((data) => {
+        const list = Array.isArray(data) ? data : data.results || [];
 
-const rawCategory = searchParams.get("category")?.trim().toLowerCase() || "";
+        setItems(
+          list.map((p) => {
+            const cat = CATEGORY_KEY[String(p.category || "").toLowerCase()] || "women";
+            const local = LOCAL_PRODUCTS.find(
+              (l) => l.category === cat && l.name === p.name
+            );
 
-const category =
-  rawCategory === "womens" ? "women" :
-  rawCategory === "mens" ? "men" :
-  rawCategory;
+            return {
+              id: p.id, // real database id
+              name: p.name,
+              category: cat,
+              price: Number(p.price),
+              rating: local?.rating ?? 4,
+              image: getApiImage(p.image),
+              fallback: local ? getLocalImage(cat, local.id) : "",
+            };
+          })
+        );
+      })
+      .catch(() => setError("Could not load products. Is the Django server running?"))
+      .finally(() => setLoading(false));
+  }, []);
 
-const filteredProducts = products.filter((product) => {
-  const matchesSearch = product.name.toLowerCase().includes(search);
-  const matchesCategory = !category || product.category === category;
+  const filteredProducts = items.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(search);
+    const matchesCategory = !category || product.category === category;
+    return matchesSearch && matchesCategory;
+  });
 
-  return matchesSearch && matchesCategory;
-});
-return (
-  
+  return (
     <main className="products-page">
       <h1>New &amp; Trending</h1>
-     {filteredProducts.length === 0 && (
-  <p className="no-products">No matching products found.</p>
-)}
+
+      {loading && <p className="no-products">Loading products...</p>}
+      {error && <p className="no-products">{error}</p>}
+      {!loading && !error && filteredProducts.length === 0 && (
+        <p className="no-products">No matching products found.</p>
+      )}
 
       <div className="products-grid">
         {filteredProducts.map((product) => (
           <article className="product-card" key={`${product.category}-${product.id}`}>
             <Link to={getDetailsPath(product)} className="product-image-link">
               <img
-                src={getImagePath(product)}
+                src={product.image || product.fallback}
                 alt={product.name}
                 className="product-image"
+                onError={(e) => {
+                  if (product.fallback && !e.currentTarget.dataset.tried) {
+                    e.currentTarget.dataset.tried = "1";
+                    e.currentTarget.src = product.fallback;
+                  } else {
+                    e.currentTarget.style.visibility = "hidden";
+                  }
+                }}
               />
             </Link>
 
@@ -107,7 +165,7 @@ return (
             </div>
           </article>
         ))}
-           </div>
+      </div>
     </main>
   );
 }

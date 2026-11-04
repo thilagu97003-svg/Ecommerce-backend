@@ -1,11 +1,93 @@
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import "../styles/OrderConfirmation.css";
 import ProgressBar from "../components/ProgressBar";
+import { API_BASE } from "../config"; 
+
+const API = `${API_BASE}`;
+
+function imageUrl(img) {
+  if (img && typeof img === "object") img = img.image || img.url || "";
+  if (!img) return "";
+  if (img.startsWith("http") || img.startsWith("/images/")) return img;
+  return `${API}/media/${img.replace(/^\/?media\//, "").replace(/^\/+/, "")}`;
+}
 
 function OrderConfirmation() {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const [catalog, setCatalog] = useState({});
+  const [ready, setReady] = useState(false);
+
+  // The order API only returns { product: <id>, size, quantity, price }.
+  // Fetch the product list once so we can show name, brand and image.
+  useEffect(() => {
+    const rawItems = state?.items || [];
+    const needsLookup = rawItems.some((i) => !i.name && !i.title);
+
+    if (!needsLookup) {
+      setReady(true);
+      return;
+    }
+
+    fetch(`${API}/api/products/`)
+      .then((res) => res.json())
+      .then((data) => {
+        const list = Array.isArray(data) ? data : data.results || [];
+        setCatalog(Object.fromEntries(list.map((p) => [p.id, p])));
+      })
+      .catch(() => {})
+      .finally(() => setReady(true));
+  }, [state]);
+
+  const items = useMemo(
+    () =>
+      (state?.items || []).map((item) => {
+        const nested = item.product && typeof item.product === "object" ? item.product : null;
+        const id = nested ? nested.id : item.product ?? item.id;
+        const p = nested || catalog[id] || {};
+
+        return {
+          ...item,
+          id,
+          name: item.name || item.title || item.product_name || p.name || p.title,
+          brand:
+            typeof item.brand === "string"
+              ? item.brand
+              : typeof p.brand === "string"
+              ? p.brand
+              : "",
+          image: imageUrl(item.image || item.product_image || p.image),
+          price: item.price ?? p.price,
+          quantity: item.quantity ?? item.qty ?? 1,
+        };
+      }),
+    [state, catalog]
+  );
+
+  // Save the order once the product details are ready
+  useEffect(() => {
+    if (!ready || !state?.orderId || !state?.form) return;
+
+    const savedOrders = JSON.parse(localStorage.getItem("stepup_orders") || "[]");
+    const index = savedOrders.findIndex((order) => order.orderId === state.orderId);
+
+    if (index === -1) {
+      savedOrders.push({
+        orderId: state.orderId,
+        email: state.form.email.trim().toLowerCase(),
+        form: state.form,
+        items,
+        status: "Order Confirmed",
+        date: new Date().toLocaleDateString("en-IN"),
+      });
+    } else {
+      savedOrders[index] = { ...savedOrders[index], items };
+    }
+
+    localStorage.setItem("stepup_orders", JSON.stringify(savedOrders));
+  }, [ready, state, items]);
 
   if (!state?.orderId || !state?.form) {
     return (
@@ -20,21 +102,7 @@ function OrderConfirmation() {
     );
   }
 
-  const { orderId, form, items = [] } = state;
-  const savedOrders = JSON.parse(localStorage.getItem("stepup_orders") || "[]");
-
-if (!savedOrders.some((order) => order.orderId === orderId)) {
-  savedOrders.push({
-  orderId,
-  email: form.email.trim().toLowerCase(),
-  form,
-  items,
-  status: "Order Confirmed",
-  date: new Date().toLocaleDateString("en-IN"),
-});
-
-  localStorage.setItem("stepup_orders", JSON.stringify(savedOrders));
-}
+  const { orderId, form } = state;
   const fullName = `${form.firstName} ${form.lastName}`.trim();
 
   const fullAddress = [
@@ -104,6 +172,11 @@ if (!savedOrders.some((order) => order.orderId === orderId)) {
     let y = 95;
 
     for (const product of items) {
+      if (y > 240) {
+        pdf.addPage();
+        y = 20;
+      }
+
       await addProductImageToPDF(pdf, product.image, 20, y, 35, 35);
 
       const productName = product.name || product.title || "Product";
@@ -117,6 +190,11 @@ if (!savedOrders.some((order) => order.orderId === orderId)) {
       pdf.text(`Price: Rs. ${itemTotal.toLocaleString("en-IN")}`, 65, y + 35);
 
       y += 50;
+    }
+
+    if (y > 220) {
+      pdf.addPage();
+      y = 20;
     }
 
     pdf.text(`Subtotal: Rs. ${subtotal.toLocaleString("en-IN")}`, 20, y + 5);
@@ -154,6 +232,9 @@ if (!savedOrders.some((order) => order.orderId === orderId)) {
                 className="confirmation-product-image"
                 src={item.image}
                 alt={item.name || item.title || "Product"}
+                onError={(e) => {
+                  e.currentTarget.style.visibility = "hidden";
+                }}
               />
 
               <div>

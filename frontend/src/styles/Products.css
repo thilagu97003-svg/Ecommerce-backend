@@ -89,3 +89,29 @@
     padding: 24px 12px;
   }
 }
+/* ===== Product cards: thin black border + hover scale ===== */
+.product-card {
+  border: 1px solid #000;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover,
+.product-card:focus-within {
+  transform: scale(1.05);
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+}
+
+@media (hover: none) {
+  .product-card:active {
+    transform: scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card {
+    transition: none;
+  }
+}

@@ -1,7 +1,8 @@
-
 import { useNavigate } from "react-router-dom";
 import "../styles/Womens.css";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { API_BASE } from "../config"; 
 
 
 function Womens() {
@@ -23,7 +24,7 @@ function Womens() {
   { name: "Glamo Flat Black Sandals", rating: 3, colors: ["#111111", "#c49a76"] },
 ];
 useEffect(() => {
-  fetch("http://127.0.0.1:8000/api/products/")
+  fetch(`${API_BASE}/api/products/`)
     .then((response) => response.json())
     .then((data) => {
       const womensProducts = data
@@ -40,7 +41,7 @@ useEffect(() => {
             image: product.image
               ? product.image.startsWith("http")
                 ? product.image
-                : `http://127.0.0.1:8000/media/${product.image.replace(/^\/?media\//, "")}`
+                : `${API_BASE}/media/${product.image.replace(/^\/?media\//, "")}`
               : "",
             rating: details?.rating ?? (ratingMatch ? Number(ratingMatch[1]) : 4),
             colors: details?.colors ?? colorMatch ?? ["#17294D", "#111111"],
@@ -71,20 +72,49 @@ useEffect(() => {
     filteredProducts.sort((a, b) => b.price - a.price);
   } else if (sortBy === "name") {
     filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortBy === "new") {
+    filteredProducts.sort((a, b) => b.id - a.id);
+  } else if (sortBy === "rating") {
+    filteredProducts.sort((a, b) => b.rating - a.rating);
   }
 
-  const addToCart = (product) => {
+  const addToCart = async (product) => {
+    const token = localStorage.getItem("stepup_access_token");
+
+    // 1. LocalStorage update (frontend instant update-kku)
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
     const existing = cart.find((item) => item.id === product.id);
 
     if (existing) {
       existing.quantity = (existing.quantity || 1) + 1;
     } else {
-      cart.push({ ...product, quantity: 1 });
+      cart.push({ ...product, quantity: 1, size: "9" });
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
     window.dispatchEvent(new Event("cartUpdated"));
+
+    // 2. Token irundha Django backend database-kku live sync aagum
+    if (token) {
+      try {
+        await axios.post(
+          `${API_BASE}/api/cart/add/`,
+          {
+            product_id: product.id,
+            size: "9",
+            quantity: 1,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Backend add to cart failed:", error.response?.data || error);
+      }
+    }
+
     alert(`${product.name} added to cart!`);
   };
 
@@ -240,14 +270,16 @@ useEffect(() => {
       {/* Product cards */}
       <section className="women-product-grid">
         {filteredProducts.slice(0, visibleCount).map((product) => (
-          <article className="women-product-card" key={product.id}>
+          <article
+            className="women-product-card"
+            key={product.id}
+            onClick={() => navigate(`/product/${product.id}`)}
+          >
 
             <div className="women-image-box">
               <img
 src={product.image}
   alt={product.name}
-  onClick={() => navigate(`/product/${product.id}`)}
-  style={{ cursor: "pointer" }}
   onError={(e) => {
     e.currentTarget.style.visibility = "hidden";
   }}
@@ -255,12 +287,7 @@ src={product.image}
             </div>
 
             <div className="women-product-info">
-              <h3
-  onClick={() => navigate(`/product/${product.id}`)}
-  style={{ cursor: "pointer" }}
->
-  {product.name}
-</h3>
+              <h3>{product.name}</h3>
 
               <div className="women-rating" aria-label={`Rated ${product.rating} out of 5`}>
   {"★".repeat(product.rating)}
@@ -300,14 +327,20 @@ src={product.image}
               <div className="women-product-actions">
   <button
     className="women-buy-btn"
-    onClick={() => navigate(`/product/${product.id}`)}
+    onClick={(e) => {
+      e.stopPropagation();
+      navigate(`/product/${product.id}`);
+    }}
   >
     Buy
   </button>
 
   <button
     className="women-cart-btn"
-    onClick={() => navigate(`/product/${product.id}`)}
+    onClick={(e) => {
+      e.stopPropagation();
+      navigate(`/product/${product.id}`);
+    }}
   >
     Add to Cart
   </button>

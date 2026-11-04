@@ -406,3 +406,69 @@
   background: #f5b7c9;
   color: #111;
 }
+/* summary product image (backend image) */
+.summary-product-image {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  height: 220px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #e8eeee;
+}
+/* ===== Checkout validation messages ===== */
+.checkout-field .field-error {
+  position: static;
+  display: block;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  color: var(--stepup-error);
+}
+
+.checkout-field .optional-tag {
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  color: #666;
+}
+
+.checkout-field input[aria-invalid="true"] {
+  border-color: var(--stepup-error);
+}
+.order-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+/* ===== Clearpay / Klarna instalment box ===== */
+.bnpl-box {
+  margin: 10px 0 0;
+  padding: 16px 18px;
+  border: 1px solid #cbd2d8;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.bnpl-box h4 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  color: var(--stepup-green-dark);
+}
+
+.bnpl-box ul {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.bnpl-box li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #f4f5f5;
+  font-size: 14px;
+}

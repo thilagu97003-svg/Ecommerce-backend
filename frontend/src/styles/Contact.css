@@ -106,3 +106,280 @@
     gap: 10px;
   }
 }
+/* ===== FIGMA MATCH: Contact page (1366px) ===== */
+.contact-page {
+  padding: 0 0 70px;
+}
+
+/* ---- top: details + image ---- */
+.contact-hero {
+  width: min(1272px, 94%);
+  margin: 0 auto;
+  grid-template-columns: 515px 1fr;
+  gap: 0;
+  align-items: start;
+  padding: 0 0 23px;
+  border-bottom: 1px solid #555;
+}
+
+.contact-details {
+  padding: 30px 0 0 50px;
+}
+
+.contact-details h1 {
+  margin: 0 0 56px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 34px;
+}
+
+.contact-details h3 {
+  margin: 0 0 18px 6px;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.contact-details p {
+  margin: 0 0 0 6px;
+  font-size: 17px;
+  line-height: 33px;
+  color: #000;
+}
+
+.contact-details p.contact-sub {
+  margin-top: 24px;
+}
+
+.contact-details a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.contact-image {
+  width: 100%;
+  height: 427px;
+  margin-top: 0;
+}
+
+/* ---- enquiry form ---- */
+.enquiry-section {
+  width: 711px;
+  max-width: 94%;
+  margin: 72px auto 0;
+}
+
+.enquiry-section h2 {
+  margin: 0 0 40px;
+  text-align: left;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.enquiry-form {
+  gap: 0;
+}
+
+.enquiry-form label {
+  margin: 0 0 12px 9px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.enquiry-form input,
+.enquiry-form textarea {
+  padding: 0 10px;
+  border: 1px solid #000;
+  border-radius: 0;
+  font-size: 16px;
+}
+
+.enquiry-form input {
+  height: 41px;
+}
+
+.enquiry-form textarea {
+  height: 141px;
+  padding-top: 10px;
+  resize: none;
+}
+
+.contact-form-row {
+  grid-template-columns: 316px 316px;
+  justify-content: space-between;
+  gap: 0;
+  margin-top: 36px;
+}
+
+.contact-form-row > div {
+  gap: 0;
+}
+
+.enquiry-form #contact-name {
+  margin-bottom: 0;
+}
+
+.enquiry-form label[for="contact-message"] {
+  margin-top: 35px;
+}
+
+.enquiry-form button {
+  width: 111px;
+  height: 56px;
+  margin-top: 44px;
+  padding: 0;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ---- tablet / mobile ---- */
+@media (max-width: 1000px) {
+  .contact-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-details {
+    padding: 24px 0 24px 12px;
+  }
+
+  .contact-details h1 {
+    margin-bottom: 28px;
+  }
+
+  .contact-image {
+    height: 280px;
+  }
+
+  .enquiry-section {
+    margin-top: 44px;
+  }
+
+  .contact-form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+/* ===== Enquiry form: validation + popup ===== */
+.enquiry-form .field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.field-error {
+  position: absolute;
+  left: 9px;
+  top: 100%;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 16px;
+  color: #c92020;
+}
+
+.enquiry-form input.invalid,
+.enquiry-form textarea.invalid {
+  border-color: #c92020;
+  outline: 1px solid #c92020;
+}
+
+.enquiry-form input:focus,
+.enquiry-form textarea:focus {
+  outline: 2px solid #2f4f4f;
+}
+
+.enquiry-form input.invalid:focus,
+.enquiry-form textarea.invalid:focus {
+  outline: 2px solid #c92020;
+}
+
+.enquiry-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ---- popup ---- */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.popup-card {
+  width: min(420px, 90%);
+  padding: 34px 28px 28px;
+  border-radius: 16px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  animation: popupIn 0.25s ease;
+}
+
+.popup-icon {
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.popup-icon.ok {
+  background: #2f4f4f;
+}
+
+.popup-icon.fail {
+  background: #c92020;
+}
+
+.popup-card h3 {
+  margin: 0 0 10px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #000;
+}
+
+.popup-card p {
+  margin: 0 0 24px;
+  font-size: 16px;
+  line-height: 24px;
+  color: #222;
+}
+
+.popup-card button {
+  width: 120px;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: #2f4f4f;
+  color: #fff;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.popup-card button:hover {
+  background: #3d6666;
+}
+
+@keyframes popupIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

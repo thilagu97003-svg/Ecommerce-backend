@@ -304,3 +304,165 @@
   right: 0;
   left: auto;
 }
+/* ===== FIGMA MATCH: hero (1366px) ===== */
+@media (min-width: 769px) {
+  .hero-carousel {
+    width: min(1270px, calc(100% - 24px));
+    margin: 31px auto 24px;
+  }
+
+  .hero-dots {
+    left: 48%;
+    bottom: 72px;
+    gap: 7px;
+  }
+
+  .hero-dots button {
+    border: 2px solid #333;
+    background: #fff;
+  }
+
+  .hero-dots button::after {
+    width: 8px;
+    height: 8px;
+    border: 1.5px solid #333;
+  }
+
+  .hero-dots button.active::after {
+    background: #2f4f4f;
+    border-color: #2f4f4f;
+  }
+}
+
+/* Slide 3 (Men's): no dark box, plain white text, button bottom-right */
+.hero-carousel:has(.hero-image-3) .hero-overlay {
+  inset: 0;
+  width: auto;
+  max-width: none;
+  padding: 0;
+  transform: none;
+  border-radius: 0;
+  background: none;
+  pointer-events: none;
+}
+
+.hero-carousel:has(.hero-image-3) .hero-overlay h2 {
+  position: absolute;
+  top: 103px;
+  right: 49px;
+  width: 262px;
+  margin: 0;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 28px;
+  text-align: center;
+}
+
+.hero-carousel:has(.hero-image-3) .hero-overlay p {
+  display: none;
+}
+
+.hero-carousel:has(.hero-image-3) .hero-overlay button {
+  position: absolute;
+  right: 53px;
+  bottom: 66px;
+  width: 138px;
+  height: 46px;
+  padding: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #000;
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .hero-carousel:has(.hero-image-3) .hero-overlay h2 {
+    top: 24px;
+    right: 14px;
+    width: 55%;
+    font-size: 16px;
+    line-height: 19px;
+  }
+
+  .hero-carousel:has(.hero-image-3) .hero-overlay button {
+    right: 14px;
+    bottom: 44px;
+    width: 110px;
+    height: 38px;
+    font-size: 16px;
+  }
+}
+/* ===== FIGMA MATCH: Slide 1 (Kids) ===== */
+.hero-carousel:has(.kids-banner) {
+  background: transparent;
+}
+
+.hero-carousel .kids-banner {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.hero-carousel .kids-banner .kids-banner-part {
+  flex: 0 0 31.35%;
+  width: auto;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 769px) {
+  .hero-carousel {
+    width: min(1277px, calc(100% - 24px));
+    height: 379px;
+  }
+
+  .hero-carousel:has(.kids-banner) .hero-overlay {
+    top: 44px;
+    left: 60px;
+    right: auto;
+    transform: none;
+    width: 204px;
+    max-width: none;
+    height: 78px;
+    padding: 10px 12px 10px 26px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.65);
+    text-align: left;
+  }
+
+  .hero-carousel:has(.kids-banner) .hero-overlay h2,
+  .hero-carousel:has(.kids-banner) .hero-overlay p {
+    display: block;
+    margin: 0;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 29px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .hero-carousel:has(.kids-banner) .hero-overlay p {
+    padding-left: 6px;
+  }
+
+  .hero-carousel:has(.kids-banner) .hero-overlay button {
+    top: 215px;
+    left: -19px;
+    width: 138px;
+    height: 47px;
+    padding: 0;
+    border-radius: 10px;
+    background: #fff;
+    color: #000;
+    font-family: "Libre Baskerville", Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+}

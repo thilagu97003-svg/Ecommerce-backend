@@ -4,6 +4,17 @@ import "../styles/Home.css";
 import { Gift } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const TRENDING = [
+  { img: "/images/trending1.jpg", name: "Ophelia Womens Silver Diamante Heel", price: "₹2,299" },
+  { img: "/images/trending2.jpg", name: "Billie Womens Silver Diamante Heel", price: "₹3,000" },
+  { img: "/images/trending3.jpg", name: "Drew Womens Blush Diamante Slip On Shoe", price: "₹2,599" },
+  { img: "/images/trending4.jpg", name: "Drew Womens Navy Diamante Slip On Shoe", price: "₹1,999" },
+  { img: "/images/trending5.jpg", name: "Weaver Mens Navy Lace Up Trainer", price: "₹799" },
+  { img: "/images/trending6.jpg", name: "Weaver Mens White Lace Up Trainer", price: "₹2,250" },
+  { img: "/images/trending7.jpg", name: "Calista Girls Pink Daisy Print Sandal", price: "₹1,899" },
+  { img: "/images/trending8.jpg", name: "Colby Boys Blue Dinosaur Canvas", price: "₹899" },
+];
+
 function Home() {
   return (
     <div className="home-page">
@@ -11,12 +22,12 @@ function Home() {
 
       <section className="home-overview">
         <h2>Overview</h2>
-        <p>
-          Explore our curated selection of high-quality shoes for every occasion.
-          From durable athletic shoes designed for peak performance to stylish
-          casual sneakers and elegant dress shoes, we offer a diverse range of
-          footwear to suit your needs. Our user-friendly interface makes it easy
-          to browse our collection and find the perfect fit.
+                <p className="overview-text">
+          <span className="ov-line">&quot;Explore our curated selection of high-quality shoes for every occasion. From durable athletic shoes designed for</span>
+          <span className="ov-line">peak performance to stylish casual sneakers and elegant dress shoes, we offer a diverse range of footwear to suit your</span>
+          <span className="ov-line">needs. Our user-friendly interface makes it easy to browse our collection and find the perfect pair, while detailed</span>
+          <span className="ov-line">product descriptions and high-quality images ensure you make an informed decision. Join our community of style</span>
+          <span className="ov-line">and discover your next favorite shoe!&quot;</span>
         </p>
       </section>
 
@@ -51,54 +62,18 @@ function Home() {
 <section className="trending-section">
   <h2>New &amp; Trending</h2>
 
-  <div className="trending-grid">
-    <div className="trending-card">
-      <img src="/images/trending1.jpg" alt="Ophelia Women's Silver Heel" />
-      <h3>Ophelia Womens Silver Diamante Heel</h3>
-      <p>MRP: ₹2,299</p>
-    </div>
-
-    <div className="trending-card">
-      <img src="/images/trending2.jpg" alt="Billie Womens Silver Heel" />
-      <h3>Billie Womens Silver Diamante Heel</h3>
-      <p>MRP: ₹3,000</p>
-    </div>
-
-    <div className="trending-card">
-      <img src="/images/trending3.jpg" alt="Drew Womens Blush Shoe" />
-      <h3>Drew Womens Blush Diamante Slip On Shoe</h3>
-      <p>MRP: ₹2,599</p>
-    </div>
-
-    <div className="trending-card">
-      <img src="/images/trending4.jpg" alt="Drew Womens Navy Shoe" />
-      <h3>Drew Womens Navy Diamante Slip On Shoe</h3>
-      <p>MRP: ₹1,999</p>
-    </div>
-
-    <div className="trending-card">
-      <img src="/images/trending5.jpg" alt="Weaver Mens Navy Trainer" />
-      <h3>Weaver Mens Navy Lace Up Trainer</h3>
-      <p>MRP: ₹799</p>
-    </div>
-
-    <div className="trending-card">
-      <img src="/images/trending6.jpg" alt="Weaver Mens White Trainer" />
-      <h3>Weaver Mens White Lace Up Trainer</h3>
-      <p>MRP: ₹2,250</p>
-    </div>
-
-    <div className="trending-card">
-      <img src="/images/trending7.jpg" alt="Calista Girls Pink Sandal" />
-      <h3>Calista Girls Pink Daisy Print Sandal</h3>
-      <p>MRP: ₹1,899</p>
-    </div>
-
-    <div className="trending-card">
-      <img src="/images/trending8.jpg" alt="Colby Boys Blue Canvas" />
-      <h3>Colby Boys Blue Dinosaur Canvas</h3>
-      <p>MRP: ₹899</p>
-    </div>
+    <div className="trending-grid">
+    {TRENDING.map((item) => (
+      <Link
+        key={item.img}
+        to={`/products?search=${encodeURIComponent(item.name)}`}
+        className="trending-card"
+      >
+        <img src={item.img} alt={item.name} />
+        <h3>{item.name}</h3>
+        <p>MRP: {item.price}</p>
+      </Link>
+    ))}
   </div>
 
  <Link to="/products" className="trending-view-btn">

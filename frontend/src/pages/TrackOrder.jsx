@@ -1,166 +1,142 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../styles/TrackOrder.css";
-import ProgressBar from "../components/ProgressBar";
+import { API_BASE } from "../config"; 
 
 function TrackOrder() {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  const orderId = state?.orderId || "Your order ID";
-  const items = state?.items || [];
-  const [orderStatus, setOrderStatus] = useState("Loading...");
-const [trackError, setTrackError] = useState("");
+  const [orderId, setOrderId] = useState(state?.orderId || null);
+  const [orderStatus, setOrderStatus] = useState(state?.status || "Loading...");
+  const [trackError, setTrackError] = useState("");
 
-useEffect(() => {
-  const token = localStorage.getItem("stepup_access_token");
+  useEffect(() => {
+    const token = localStorage.getItem("stepup_access_token");
 
-  if (!state?.orderId || !token) {
-    setTrackError("Order details or login token not found.");
-    return;
-  }
+    const getOrderStatus = async () => {
+      try {
+        let currentId = orderId;
 
-  setTrackError("");
+        // Oruvelai refresh panninaal latest order ID edukkum
+        if (!currentId) {
+          const listRes = await axios.get(`${API_BASE}/api/orders/`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          });
 
-  axios
-    .get(`http://127.0.0.1:8000/api/orders/${state.orderId}/`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => {
-      const status = response.data.status;
-      setOrderStatus(status);
+          const orders = Array.isArray(listRes.data)
+            ? listRes.data
+            : listRes.data.orders || [];
 
-      if (status === "Delivered") {
-        navigate("/delivery-success", {
-          state: { orderId, items, form: state?.form },
-        });
+          if (orders.length > 0) {
+            currentId = orders[0].id;
+            setOrderId(currentId);
+          } else {
+            setTrackError("No active orders found.");
+            return;
+          }
+        }
+
+        // Live status fetch from backend
+        const res = await axios.get(
+          `${API_BASE}/api/orders/${currentId}/`,
+          {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          }
+        );
+
+        const status = res.data.status;
+        setOrderStatus(status);
+
+        if (status === "Delivered") {
+          navigate("/delivery-success", {
+            state: {
+              orderId: currentId,
+              items: res.data.items || state?.items || [],
+              form: state?.form,
+            },
+          });
+        }
+      } catch (err) {
+        console.error("Track status error:", err);
       }
-    })
-    .catch((error) => {
-      console.error("Track order error:", error.response?.data || error);
-      setTrackError("Could not load order status.");
-    });
-}, [state?.orderId, navigate]);
-  const statusOrder = ["Pending", "Confirmed", "Shipped", "Delivered"];
-const currentStage = statusOrder.indexOf(orderStatus);
-const isDelivered = orderStatus === "Delivered";
+    };
 
-const stages = [
-  {
-    title: "Order Placed",
-    description: "We have received your order.",
-    icon: "🛒",
-    done: currentStage >= 0,
-  },
-  {
-    title: "Order Confirmed",
-    description: "Your order is confirmed.",
-    icon: "📦",
-    done: currentStage >= 1,
-  },
-  {
-    title: "Order Dispatched",
-    description: "Your order has been dispatched.",
-    icon: "🚚",
-    done: currentStage >= 2,
-  },
-  {
-    title: "Delivered",
-    description: isDelivered
-      ? "Your order has been delivered."
-      : "Your order will be delivered to your address.",
-    icon: "✓",
-    done: isDelivered,
-  },
-];
+    getOrderStatus();
+    const interval = setInterval(getOrderStatus, 5000);
+    return () => clearInterval(interval);
+  }, [orderId, navigate, state]);
 
- 
+  // Admin status matches: Pending (0), Confirmed (1), Shipped (2), Delivered (3)
+  const statusList = ["Pending", "Confirmed", "Shipped", "Delivered"];
+  const currentStage = statusList.indexOf(orderStatus);
 
-  const formatPrice = (price) =>
-    `₹${Number(price || 0).toLocaleString("en-IN")}`;
+  const stages = [
+    {
+      title: "Order Placed",
+      description: "We have received your order.",
+      icon: "🛒",
+      done: currentStage >= 0,
+    },
+    {
+      title: "Order Confirmed",
+      description: "Your order is confirmed.",
+      icon: "📦",
+      done: currentStage >= 1,
+    },
+    {
+      title: "Order Dispatched",
+      description: "Your order has been dispatched.",
+      icon: "🚚",
+      done: currentStage >= 2,
+    },
+    {
+      title: "Delivered",
+      description: "Your order will be delivered to your address.",
+      icon: "✓",
+      done: currentStage >= 3,
+    },
+  ];
 
   return (
     <main className="track-order-page">
       <section className="track-order-card">
-        <button
-          className="track-order-back"
-          onClick={() => navigate(-1)}
-        >
-          ← Back
-        </button>
-        <ProgressBar currentStep={4} />
-
         <h1>Track Your Order</h1>
 
         <p className="track-order-id">
-          Order ID: <strong>{orderId}</strong>
+          Order ID: <strong>{orderId || "Loading..."}</strong>
         </p>
-        {trackError && <p role="alert">{trackError}</p>}
-{!trackError && <p>Current status: {orderStatus}</p>}
 
-        {items.length > 0 && (
-          <section className="track-order-items">
-            <h2>Your Order</h2>
+        {trackError && <p className="track-error">{trackError}</p>}
 
-            {items.map((item, index) => {
-              const quantity = Number(item.quantity || 1);
-              const itemTotal = Number(item.price || 0) * quantity;
+        <p className="track-current-status">
+          Current status: <strong>{orderStatus}</strong>
+        </p>
 
-              return (
-                <div
-                  className="track-order-product"
-                  key={`${item.id || item.name || index}-${item.size || ""}-${index}`}
-                >
-                  <img
-                    className="track-order-product-image"
-                    src={item.image}
-                    alt={item.name || item.title || "Ordered product"}
-                    onError={(event) => {
-                      event.currentTarget.style.visibility = "hidden";
-                    }}
-                  />
-
-                  <div className="track-order-product-details">
-                    <h3>{item.name || item.title || "Your product"}</h3>
-                    <p>Size: {item.size ?? "—"}</p>
-                    <p>Quantity: {quantity}</p>
-                    <p>Price: {formatPrice(itemTotal)}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </section>
-        )}
-
-        <div className="track-order-timeline">
+        <div className="track-steps-list">
           {stages.map((stage, index) => (
-            <div className="track-order-stage" key={stage.title}>
-              <div
-                className={`track-order-stage-icon ${
-                  stage.done ? "is-done" : ""
-                }`}
-              >
-                {stage.icon}
+            <div
+              className={`track-step-row ${stage.done ? "active" : ""}`}
+              key={index}
+            >
+              <div className="track-icon-col">
+                <span className="track-step-circle">{stage.icon}</span>
+                {index < stages.length - 1 && <span className="track-vertical-line" />}
               </div>
 
-              <div className="track-order-stage-text">
-               <h3>{stage.title}</h3>
+              <div className="track-text-col">
+                <h3>{stage.title}</h3>
                 <p>{stage.description}</p>
               </div>
-
-              {index < stages.length - 1 && (
-                <div className="track-order-stage-line" />
-              )}
             </div>
           ))}
         </div>
 
         <button
-          className="track-order-shop-button"
-          onClick={() => navigate("/womens")}
+          type="button"
+          className="track-continue-btn"
+          onClick={() => navigate("/mens")}
         >
           Continue Shopping
         </button>

@@ -294,3 +294,182 @@
     font-size: 20px;
   }
 }
+/* ===== FIGMA MATCH: Overview, categories, trending (1366px) ===== */
+.home-overview {
+  padding: 43px 0 0;
+}
+
+.home-overview h2,
+.home-categories h2,
+.trending-section h2 {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28px;
+  text-align: center;
+}
+
+.home-overview h2 {
+  margin: 0;
+}
+
+.home-overview .overview-text {
+  max-width: none;
+  margin: 44px auto 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 19px;
+  letter-spacing: 0.3px;
+  color: #000;
+}
+
+.overview-text .ov-line {
+  display: block;
+  white-space: nowrap;
+}
+
+/* ---- What are you looking for? ---- */
+.home-categories {
+  padding: 0;
+}
+
+.home-categories h2 {
+  margin: 53px 0 46px;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 327px);
+  justify-content: center;
+  gap: 74px;
+  max-width: none;
+  margin: 0 auto;
+}
+
+.category-card a {
+  display: block;
+}
+
+.category-card img {
+  width: 327px;
+  height: 342px;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+.category-card h3 {
+  margin: 22px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ---- New & Trending ---- */
+.trending-section h2 {
+  margin: 60px 0 0;
+}
+
+.trending-grid {
+  grid-template-columns: repeat(4, 250px);
+  justify-content: center;
+  column-gap: 60px;
+  row-gap: 87px;
+  max-width: none;
+  margin: 50px auto 0;
+}
+
+.trending-card img {
+  width: 250px;
+  height: 265px;
+  margin: 0;
+  border-radius: 8px;
+  background: #ececec;
+  object-fit: cover;
+  box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.trending-card h3,
+.trending-card p {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 19px;
+  margin: 0;
+  min-height: 0;
+}
+
+.trending-card h3 {
+  margin-top: 22px;
+}
+
+/* ---- smaller screens ---- */
+@media (max-width: 1100px) {
+  .overview-text .ov-line {
+    display: inline;
+    white-space: normal;
+  }
+
+  .home-overview .overview-text {
+    max-width: 90%;
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 0 20px;
+  }
+
+  .category-card img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 327 / 342;
+  }
+
+  .trending-grid {
+    grid-template-columns: repeat(2, 250px);
+    column-gap: 30px;
+    row-gap: 40px;
+  }
+}
+
+@media (max-width: 560px) {
+  .category-grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .category-card {
+    width: 70%;
+  }
+
+  .trending-grid {
+    grid-template-columns: 250px;
+  }
+}
+/* ===== New & Trending: hover scale + click ===== */
+.trending-card {
+  display: block;
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.trending-card img {
+  transition: box-shadow 0.3s ease;
+}
+
+.trending-card:hover,
+.trending-card:focus-visible {
+  transform: scale(1.07);
+  position: relative;
+  z-index: 2;
+}
+
+.trending-card:hover img,
+.trending-card:focus-visible img {
+  box-shadow: 5px 8px 14px rgba(0, 0, 0, 0.35);
+}
+
+.trending-card:focus-visible {
+  outline: none;
+}

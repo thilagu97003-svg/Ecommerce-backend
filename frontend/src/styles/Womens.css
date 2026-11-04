@@ -1,5 +1,3 @@
-
-
 .womens-page {
   position: relative;
 }
@@ -475,4 +473,30 @@
 
 .empty-stars {
   color: #d5d5d5;
+}
+/* ===== Product cards (Womens / Mens / Kids): thin black border + hover scale ===== */
+.women-product-card {
+  border: 1px solid #000;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.women-product-card:hover,
+.women-product-card:focus-within {
+  transform: scale(1.05);
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+}
+
+@media (hover: none) {
+  .women-product-card:active {
+    transform: scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .women-product-card {
+    transition: none;
+  }
 }

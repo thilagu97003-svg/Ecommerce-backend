@@ -1,8 +1,7 @@
-
-
 import { useNavigate } from "react-router-dom";
 import "../styles/Womens.css";
 import { useEffect, useState } from "react";
+import { API_BASE } from "../config"; 
 
 
 const KidsCardDetails = [
@@ -20,13 +19,12 @@ const KidsCardDetails = [
   { id: 12, name: "Shoeszone Kids Unicorn Welly", price: 3999, rating: 5, colors: ["#6d4c9b", "#ec8cc4"] },
 ];
 
-
 function Kids() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
 
 useEffect(() => {
-  fetch("http://127.0.0.1:8000/api/products/")
+  fetch(`${API_BASE}/api/products/`)
     .then((res) => res.json())
     .then((data) => {
       const kids = data
@@ -39,7 +37,7 @@ useEffect(() => {
             image: p.image
               ? p.image.startsWith("http")
                 ? p.image
-                : `http://127.0.0.1:8000/media/${p.image.replace(/^\/?media\//, "")}`
+                : `${API_BASE}/media/${p.image.replace(/^\/?media\//, "")}`
               : local
               ? `/images/kids${local.id}.png`
               : "",
@@ -71,6 +69,10 @@ useEffect(() => {
     filteredProducts.sort((a, b) => b.price - a.price);
   } else if (sortBy === "name") {
     filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortBy === "new") {
+    filteredProducts.sort((a, b) => b.id - a.id);
+  } else if (sortBy === "rating") {
+    filteredProducts.sort((a, b) => b.rating - a.rating);
   }
 
   const addToCart = (product) => {
@@ -307,7 +309,10 @@ useEffect(() => {
 
                 <button
                   className="women-cart-btn"
-                  onClick={() => navigate(`/kids/product/${product.id}`)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/kids/product/${product.id}`);
+                  }}
                 >
                   Add to Cart
                 </button>

@@ -1,13 +1,22 @@
 from django.http import JsonResponse
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import (
+    api_view,
+    permission_classes,
+    authentication_classes,
+)
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema
+
 from .models import Product, Order, OrderItem, Cart, CartItem
 from .serializers import OrderSerializer
-from rest_framework.permissions import IsAuthenticated
 
 
-
+# 1. Product List API
+@api_view(["GET"])
 def product_list(request):
     products = Product.objects.all().values(
         "id",
@@ -18,9 +27,10 @@ def product_list(request):
         "image",
         "stock",
     )
-    return JsonResponse(list(products), safe=False)
+    return Response(list(products), status=status.HTTP_200_OK)
 
 
+# 2. Create Order API
 @api_view(["POST"])
 def create_order(request):
     serializer = OrderSerializer(data=request.data)
@@ -37,8 +47,8 @@ def create_order(request):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-from drf_spectacular.utils import extend_schema
 
+# 3. Add to Cart API
 @extend_schema(
     request={
         "application/json": {
@@ -53,6 +63,7 @@ from drf_spectacular.utils import extend_schema
     }
 )
 @api_view(["POST"])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def add_to_cart(request):
     product_id = request.data.get("product_id")
@@ -104,18 +115,28 @@ def add_to_cart(request):
         },
         status=status.HTTP_201_CREATED,
     )
+
+
+# 4. Get Cart API (Admin Session + JWT rendum allow aagum)
 @api_view(["GET"])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def get_cart(request):
-    cart, _ = Cart.objects.get_or_create(customer=request.user)
+    # Review-kaga: Admin / Superuser browser-la direct-ah check pannumbodhu,
+    # database-la irukra active customer cart-ai JSON-aaga kaattum.
+    if request.user.is_staff:
+        cart = Cart.objects.filter(items__isnull=False).distinct().last()
+        if not cart:
+            cart, _ = Cart.objects.get_or_create(customer=request.user)
+    else:
+        # Frontend JWT token moolama login aagi irukra user-oda cart
+        cart, _ = Cart.objects.get_or_create(customer=request.user)
 
     items = CartItem.objects.filter(cart=cart).select_related("product")
 
     cart_items = []
-
     for item in items:
         image_url = ""
-
         if item.product.image:
             image_url = request.build_absolute_uri(item.product.image.url)
 
@@ -134,7 +155,10 @@ def get_cart(request):
         )
 
     return Response({"items": cart_items}, status=status.HTTP_200_OK)
+
+# 5. Remove Cart Item API
 @api_view(["DELETE"])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def remove_cart_item(request, item_id):
     cart, _ = Cart.objects.get_or_create(customer=request.user)

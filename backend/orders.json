@@ -1,0 +1,80 @@
+[
+{
+  "model": "orders.order",
+  "pk": 10,
+  "fields": {
+    "customer": 9,
+    "customer_name": "thilagavathi K",
+    "email": "thilagu@gmail.com",
+    "phone": "8989897765",
+    "address": "1/17, main road, sivakasi, tamilnadu, 626131, Near by water tank",
+    "items": [
+      {
+        "product": 13,
+        "size": "8",
+        "quantity": 2,
+        "price": "4999.00"
+      }
+    ],
+    "total_amount": "9998.00",
+    "status": "Delivered",
+    "payment_method": "Card",
+    "payment_status": "Paid",
+    "transaction_id": "",
+    "paid_at": null,
+    "created_at": "2026-11-04T10:57:09.924Z"
+  }
+},
+{
+  "model": "orders.order",
+  "pk": 11,
+  "fields": {
+    "customer": 9,
+    "customer_name": "ishwarya k",
+    "email": "ishu123@gmail.com",
+    "phone": "9876544331",
+    "address": "290, west street, hosur, tamilnadu, 626139, silverwoods",
+    "items": [
+      {
+        "product": 22,
+        "size": "9",
+        "quantity": 2,
+        "price": "3999.00"
+      }
+    ],
+    "total_amount": "7998.00",
+    "status": "Pending",
+    "payment_method": "PayPal",
+    "payment_status": "Pending",
+    "transaction_id": "",
+    "paid_at": null,
+    "created_at": "2026-11-04T11:46:55.314Z"
+  }
+},
+{
+  "model": "orders.order",
+  "pk": 12,
+  "fields": {
+    "customer": 10,
+    "customer_name": "Krishika A",
+    "email": "krishi@gmail.com",
+    "phone": "9988776655",
+    "address": "18, east street, chennai, tamilnadu, 600001",
+    "items": [
+      {
+        "product": 33,
+        "size": "4",
+        "quantity": 1,
+        "price": "5799.00"
+      }
+    ],
+    "total_amount": "5799.00",
+    "status": "Delivered",
+    "payment_method": "PayPal",
+    "payment_status": "Paid",
+    "transaction_id": "",
+    "paid_at": null,
+    "created_at": "2026-11-04T19:46:12.950Z"
+  }
+}
+]

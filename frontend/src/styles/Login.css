@@ -178,3 +178,188 @@
     padding: 14px 20px 22px;
   }
 }
+/* ===== FIGMA MATCH: Login page (1366px) ===== */
+.login-page {
+  min-height: 0;
+  padding: 60px 16px 70px;
+}
+
+.login-card {
+  width: 480px;
+  max-width: 100%;
+  min-height: 0;
+  padding: 29px 0 42px;
+  border: 1px solid #000;
+  border-radius: 28px;
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* ---- tabs: 395 x 48, card left la 33px ---- */
+.login-tabs {
+  width: 395px;
+  max-width: calc(100% - 33px);
+  margin: 0 0 29px 33px;
+}
+
+.login-tabs button {
+  height: 48px;
+  padding: 0;
+  background: #d9d9d9;
+  color: #000;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 48px;
+}
+
+.login-tabs button:last-child {
+  padding-left: 28px;
+}
+
+.login-tabs .active-tab {
+  background: #2f4f4f;
+  color: #fff;
+}
+
+/* ---- form: 305px, center ---- */
+.login-form {
+  width: 305px;
+  max-width: calc(100% - 40px);
+  margin: 0 auto;
+  gap: 19px;
+}
+
+.field label {
+  margin-bottom: 3px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.field input {
+  height: 33px;
+  padding: 0 19px;
+  border: 1px solid #000;
+  border-radius: 0;
+  font-size: 14px;
+}
+
+.field input::placeholder {
+  font-size: 13px;
+  color: #444;
+}
+
+.password-box input {
+  padding-right: 44px;
+}
+
+.eye {
+  right: 9px;
+  display: flex;
+  align-items: center;
+  color: #000;
+}
+
+.forgot-link {
+  margin: 4px -10px 0 0;
+  font-size: 13px;
+  line-height: 16px;
+  color: #e00000;
+  text-align: right;
+}
+
+/* ---- Log In button: 112 x 57 ---- */
+.login-submit {
+  width: 112px;
+  height: 57px;
+  margin-top: 11px;
+  padding: 0;
+  border-radius: 14px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ---- message ---- */
+.login-message {
+  width: 305px;
+  max-width: calc(100% - 40px);
+  margin: -8px auto 18px;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: left;
+}
+
+/* ---- Or + Google ---- */
+.login-or {
+  margin: 23px 0 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 305px;
+  max-width: calc(100% - 40px);
+  height: 32px;
+  margin: 40px auto 0;
+  padding: 0;
+  border: 1px solid #000;
+  border-radius: 0;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.g-icon {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.register-text {
+  margin: 34px 0 0;
+  font-size: 17px;
+  line-height: 22px;
+}
+
+.register-text a {
+  color: #e00000;
+}
+
+/* ---- mobile ---- */
+@media (max-width: 520px) {
+  .login-page {
+    padding: 30px 12px 50px;
+  }
+
+  .login-card {
+    padding: 20px 0 32px;
+    border-radius: 20px;
+  }
+
+  .login-tabs {
+    width: auto;
+    max-width: none;
+    margin: 0 20px 24px;
+  }
+
+  .login-tabs button {
+    font-size: 20px;
+  }
+
+  .login-tabs button:last-child {
+    padding-left: 0;
+  }
+}
+/* ===== Login messages: error red, success green ===== */
+.login-message.error {
+  color: #c92020;
+  font-weight: 700;
+}
+
+.login-message.success {
+  color: #1b7f3b;
+  font-weight: 700;
+}

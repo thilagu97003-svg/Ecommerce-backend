@@ -1,9 +1,10 @@
 
-
 import { useNavigate } from "react-router-dom";
 import "../styles/Womens.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../config"; 
+
 
 function Mens() {
   const navigate = useNavigate();
@@ -23,36 +24,37 @@ function Mens() {
   { id: 12, name: "Herfa Hand-Painted Leather Sandals", price: 4999, rating: 5, colors: ["#8b542f", "#4a3024"] },
 ];
 
-
 useEffect(() => {
-  fetch("http://127.0.0.1:8000/api/products/")
-    .then((response) => response.json())
-    .then((data) => {
-      const mensProducts = data
-        .filter((product) => product.category === "Mens")
-        .map((product) => {
-  const local = MensCardDetails.find((m) => m.name === product.name);
-  return {
-    ...product,
-    image: product.image
-  ? product.image.startsWith("http")
-    ? product.image
-    : `http://127.0.0.1:8000${product.image.startsWith("/") ? "" : "/media/"}${product.image.replace(/^\/+/, "")}`
-  : local
-  ? `/images/men${local.id}.png`
-  : "",
-    price: Number(product.price),
-    rating: 4,
-        colors: ["#17294D", "#111111", "#A6A6A6"],
-  };
-});
-        console.log(mensProducts.find((product) => product.id === 38));
-setProducts(mensProducts);
+    fetch(`${API_BASE}/api/products/`)
+      .then((response) => response.json())
+      .then((data) => {
+        const mensProducts = data
+          .filter(
+            (product) =>
+              product.category &&
+              product.category.toLowerCase().includes("men")
+          )
+          .map((product) => {
+            let resolvedImage = "/images/men1.png";
+            if (product.image) {
+              resolvedImage = product.image.startsWith("http")
+                ? product.image
+                : `${API_BASE}/media/${product.image.replace(/^\/?media\//, "")}`;
+            }
 
-      setProducts(mensProducts);
-    })
-    .catch((error) => console.error("Products load failed:", error));
-}, []);
+            return {
+              ...product,
+              image: resolvedImage,
+              price: Number(product.price),
+              rating: product.rating || 4,
+              colors: product.colors || ["#17294D", "#111111"],
+            };
+          });
+
+        setProducts(mensProducts);
+      })
+      .catch((error) => console.error("Products load failed:", error));
+  }, []);
 
   const [sortBy, setSortBy] = useState("default");
   const [maxPrice, setMaxPrice] = useState("all");
@@ -73,6 +75,10 @@ setProducts(mensProducts);
     filteredProducts.sort((a, b) => b.price - a.price);
   } else if (sortBy === "name") {
     filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortBy === "new") {
+    filteredProducts.sort((a, b) => b.id - a.id);
+  } else if (sortBy === "rating") {
+    filteredProducts.sort((a, b) => b.rating - a.rating);
   }
 
   const addToCart = async (product) => {
@@ -85,7 +91,7 @@ setProducts(mensProducts);
 
   try {
    await axios.post(
-  "http://127.0.0.1:8000/api/cart/add/",
+  `${API_BASE}/api/cart/add/`,
   {
         product_id: product.id,
         quantity: 1,
@@ -262,19 +268,18 @@ setProducts(mensProducts);
   className="women-product-card"
   key={product.id}
   onClick={() => navigate(`/men/product/${product.id}`)}
-  style={{ cursor: "pointer" }}
 >
   <div className="women-image-box">
     <img
   src={product.image}
   alt={product.name}
-  onError={() => console.log("Image failed:", product.image)}
+  onError={(e) => {
+    e.currentTarget.style.visibility = "hidden";
+  }}
 />
   </div>
             <div className="women-product-info">
-              <h3 onClick={() => navigate(`/men/product/${product.id}`)}>
-  {product.name}
-</h3>
+              <h3>{product.name}</h3>
 
               <div className="women-rating" aria-label={`Rated ${product.rating} out of 5`}>
   {"★".repeat(product.rating)}

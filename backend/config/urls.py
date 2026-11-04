@@ -3,12 +3,16 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.urls import re_path
+from django.views.static import serve
+
+
 
 from products.views import product_list, add_to_cart, get_cart, remove_cart_item
 from accounts.views import register_user, login_user
 from orders.views import create_order, order_detail
 from django.urls import path, include
-from django.urls import path, include
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -33,10 +37,10 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("api/contact/", include("contact.urls")),
-    path("admin/", admin.site.urls),
     path("api/contact/", include("contact.urls")),
     path("api/about/", include("about.urls")),
     path("api/home/", include("home.urls")),
+    re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
 ]
 
 if settings.DEBUG:

@@ -19,7 +19,7 @@ import "../styles/HeroCarousel.css";
   },
   {
     image: "/images/men-shoe.jpg",
-    title: "Men's Wear high heel office shoe only 40% discount today only",
+    title: "Men’s wear high heel office shoe only 40% discount today only",
     button: "Shop Now",
     category: "Mens",
   },
@@ -49,7 +49,7 @@ function HeroCarousel() {
      
 {current === 0 ? (
   <div className="kids-banner">
-    {[1, 2, 3].map((part) => (
+        {[1, 2, 3, 4].map((part) => (
       <div
         key={part}
         className={`kids-banner-part kids-part-${part}`}

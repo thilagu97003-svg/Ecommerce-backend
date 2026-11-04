@@ -6,7 +6,19 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Search, ShoppingCart, UserRound } from "lucide-react";
 import axios from "axios";
+import { API_BASE } from "../config"; 
 
+const BRAND_COLUMNS = [
+  [["B", ["Barbie", "Beckett", "Bluey"]], ["C", ["Comfort Plus", "Comfy steps", "Crocs", "Cushion Walk"]]],
+  [["D", ["Disney frozen", "Disney stitch", "Divaz", "Dunlop"]], ["E", ["EarthWorks"]], ["G", ["Gabbys Dollhouse"]]],
+  [["H", ["Heart", "Heavenly feet", "Hobos", "Hush puppies"]], ["J", ["Jo & Joe", "JuJu"]]],
+  [["K", ["Kickers", "Krush"]], ["L", ["Lambretta", "Lilley", "LoL", "Lotus", "Lunar"]]],
+  [["M", ["Marco Lozzi", "Marvel", "Maya grace"]], ["O", ["Original penguin", "Osaga"]]],
+  [["P", ["Paw patrol", "Pokemon"]], ["R", ["Red fish", "Red level", "Regatta", "Rieker", "Rocket Dog"]]],
+  [["S", ["Skechers", "Soft line", "Softlites", "Spider-man", "Stone creek", "Super mario"]]],
+  [["T", ["Totes isotoner", "Trespass", "Truffle", "Trux"]], ["U", ["Umbro"]]],
+  [["W", ["Walkright", "Wednesday", "Wrangler"]], ["X", ["XL"]]],
+];
 
 function Header()
  {
@@ -25,27 +37,38 @@ useEffect(() => {
   const updateCartCount = async () => {
     const token = localStorage.getItem("stepup_access_token");
 
-    if (!token) {
-      setCartCount(0);
-      return;
+    // 1. Token irundhaal backend API moolama cart count edukkurom
+    if (token) {
+      try {
+        const response = await axios.get(`${API_BASE}/api/cart/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const items = response.data.items || [];
+        const count = items.reduce(
+          (total, item) => total + Number(item.quantity || 1),
+          0
+        );
+
+        setCartCount(count);
+        localStorage.setItem("cart", JSON.stringify(items));
+        return;
+      } catch (error) {
+        console.error("Cart count load failed from backend:", error.response?.data || error);
+      }
     }
 
+    // 2. Token illanaal alladhu API fail aanaal localStorage-la irundhu count edukkurom
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/cart/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const items = response.data.items || [];
-      const count = items.reduce(
+      const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const localCount = localCart.reduce(
         (total, item) => total + Number(item.quantity || 1),
         0
       );
-
-      setCartCount(count);
-    } catch (error) {
-      console.error("Cart count load failed:", error.response?.data || error);
+      setCartCount(localCount);
+    } catch {
       setCartCount(0);
     }
   };
@@ -54,97 +77,93 @@ useEffect(() => {
 
   const handleCartUpdate = () => updateCartCount();
   window.addEventListener("cartUpdated", handleCartUpdate);
+  window.addEventListener("storage", handleCartUpdate);
 
   return () => {
     window.removeEventListener("cartUpdated", handleCartUpdate);
+    window.removeEventListener("storage", handleCartUpdate);
   };
 }, []);
   return (
     <>
     
-      <header className="top-header">
+            <header className="top-header">
         <Link to="/" className="brand-logo" aria-label="StepUp home">
-  <img src={logo} alt="StepUp.in Logo" />
-</Link>
-<form
-  className="header-search"
-  onSubmit={(e) => {
-    e.preventDefault();
-    const query = searchTerm.trim();
+          <img src={logo} alt="StepUp.in Logo" />
+        </Link>
 
-    if (query) {
-      navigate(`/products?search=${encodeURIComponent(query)}`);
-    }
-  }}
->
-  <Search size={21} />
+        <form
+          className="header-search"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const query = searchTerm.trim();
 
-  <input
-    type="search"
-    name="search"
-    placeholder="Search shoes"
-    aria-label="Search shoes"
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-  />
+            if (query) {
+              navigate(`/products?search=${encodeURIComponent(query)}`);
+            }
+          }}
+        >
+          <Search size={21} />
 
-  
-    
-
-</form>
+          <input
+            type="search"
+            name="search"
+            placeholder="Search here"
+            aria-label="Search here"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </form>
 
         <nav className="header-links">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/about">About Us</NavLink>
           <NavLink to="/contact">Contact Us</NavLink>
-      
-        
+
+          {!isLoggedIn && <NavLink to="/login">Log in</NavLink>}
+
           <NavLink to="/cart" className="cart-link">
             Cart <ShoppingCart size={20} />
             <span className="cart-badge">{cartCount}</span>
           </NavLink>
-          <div className="profile-menu">
-  <button
-    type="button"
-    className="profile-button"
-    aria-label="Profile menu"
-    onClick={() => setProfileOpen((open) => !open)}
-  >
-    <UserRound size={22} />
-  </button>
 
-  {profileOpen && (
-    <div className="profile-dropdown">
-      {!isLoggedIn && (
-  <Link to="/login" onClick={() => setProfileOpen(false)}>
-    Login
-  </Link>
-)}
-{loggedInUser?.email && (
-  <div className="profile-email">{loggedInUser.email}</div>
-)}
-      <Link to="/my-orders" onClick={() => setProfileOpen(false)}>
-        My Orders
-      </Link>
-      <Link to="/track-order" onClick={() => setProfileOpen(false)}>
-        Track Order
-      </Link>
-      {isLoggedIn && (
-  <button
-    type="button"
-    onClick={() => {
-      localStorage.removeItem("stepup_logged_in");
-      localStorage.removeItem("stepup_google_user");
-      setProfileOpen(false);
-      navigate("/");
-    }}
-  >
-    Logout
-  </button>
-)}
-    </div>
-  )}
-</div>
+          {isLoggedIn && (
+            <div className="profile-menu">
+              <button
+                type="button"
+                className="profile-button"
+                aria-label="Profile menu"
+                onClick={() => setProfileOpen((open) => !open)}
+              >
+                <UserRound size={22} />
+              </button>
+
+              {profileOpen && (
+                <div className="profile-dropdown">
+                  {loggedInUser?.email && (
+                    <div className="profile-email">{loggedInUser.email}</div>
+                  )}
+                  <Link to="/my-orders" onClick={() => setProfileOpen(false)}>
+                    My Orders
+                  </Link>
+                  <Link to="/track-order" onClick={() => setProfileOpen(false)}>
+                    Track Order
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      localStorage.removeItem("stepup_logged_in");
+                      localStorage.removeItem("stepup_google_user");
+                      setProfileOpen(false);
+                      navigate("/");
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </nav>
       </header>
 
@@ -357,112 +376,40 @@ useEffect(() => {
     </div>
   </div>
 </div>
-  <div className="category-item brands-menu">
-  <NavLink to="/brands">Brands</NavLink>
+   <div className="category-item brands-menu">
+    <NavLink to="/brands">Brands</NavLink>
 
-  <div className="mega-menu brands-mega-menu">
-    <div className="mega-column">
-      <h4>B</h4>
-      <Link to="/brands">Barbie</Link>
-      <Link to="/brands">Beckett</Link>
-      <Link to="/brands">Bisley</Link>
-      <Link to="/brands">C</Link>
-      <Link to="/brands">C. Fortis Plus</Link>
-      <Link to="/brands">Comfy Steps</Link>
-      <Link to="/brands">Converse</Link>
-      <Link to="/brands">Cushion Walk</Link>
-    </div>
-
-    <div className="mega-column">
-      <h4>D</h4>
-      <Link to="/brands">Disney Frozen</Link>
-      <Link to="/brands">Disney Stitch</Link>
-      <Link to="/brands">Dunlop</Link>
-      <Link to="/brands">E</Link>
-      <Link to="/brands">Eduk</Link>
-      <Link to="/brands">F</Link>
-      <Link to="/brands">H</Link>
-      <Link to="/brands">Heart</Link>
-      <Link to="/brands">Heavenly Feet</Link>
-      <Link to="/brands">Hotter</Link>
-      <Link to="/brands">Hush Puppies</Link>
-    </div>
-
-    <div className="mega-column">
-      <h4>K</h4>
-      <Link to="/brands">Kickers</Link>
-      <Link to="/brands">Skechers</Link>
-      <Link to="/brands">L</Link>
-      <Link to="/brands">Lambretta</Link>
-      <Link to="/brands">Liberty</Link>
-      <Link to="/brands">Lelli Kelly</Link>
-      <Link to="/brands">Lunar</Link>
-    </div>
-
-    <div className="mega-column">
-      <h4>M</h4>
-      <Link to="/brands">Marco Tozzi</Link>
-      <Link to="/brands">Marvel</Link>
-      <Link to="/brands">Mayoral</Link>
-      <Link to="/brands">G</Link>
-      <Link to="/brands">Gola</Link>
-      <Link to="/brands">Original Penguin</Link>
-      <Link to="/brands">P</Link>
-      <Link to="/brands">Paw Patrol</Link>
-      <Link to="/brands">Pokemon</Link>
-    </div>
-
-    <div className="mega-column">
-      <h4>R</h4>
-      <Link to="/brands">Red Fish</Link>
-      <Link to="/brands">Regal</Link>
-      <Link to="/brands">Revere</Link>
-      <Link to="/brands">Rieker</Link>
-      <Link to="/brands">Rocket Dog</Link>
-    </div>
-
-    <div className="mega-column">
-      <h4>S</h4>
-      <Link to="/brands">Skechers</Link>
-      <Link to="/brands">Softinos</Link>
-      <Link to="/brands">Spider-Man</Link>
-      <Link to="/brands">Steve Madden</Link>
-      <Link to="/brands">Super Mario</Link>
-    </div>
-
-    <div className="mega-column">
-      <h4>T</h4>
-      <Link to="/brands">Totes Isotoner</Link>
-      <Link to="/brands">Tropicana</Link>
-      <Link to="/brands">Truffle</Link>
-      <Link to="/brands">True</Link>
-      <Link to="/brands">U</Link>
-      <Link to="/brands">Umbro</Link>
-    </div>
-
-    <div className="mega-column">
-      <h4>W</h4>
-      <Link to="/brands">Walkright</Link>
-      <Link to="/brands">Wednesday</Link>
-      <Link to="/brands">Wrangler</Link>
-      <Link to="/brands">X</Link>
-      <Link to="/brands">XL</Link>
+    <div className="mega-menu brands-mega-menu">
+      {BRAND_COLUMNS.map((column, i) => (
+        <div className="brand-col" key={i}>
+          {column.map(([letter, names]) => (
+            <div className="brand-group" key={letter}>
+              <h4>{letter}</h4>
+              {names.map((name) => (
+                <Link key={name} to="/brands">{name}</Link>
+              ))}
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   </div>
-</div>
+
+
+
   <div className="category-item offers-menu">
-  <NavLink to="/offers">Offers</NavLink>
+    <NavLink to="/offers">Offers</NavLink>
 
-  <div className="mega-menu offers-mega-menu">
-    <div className="mega-column">
-      <h4>SALE</h4>
-      <Link to="/offers">Top picks for thousands</Link>
-      <Link to="/offers">Discounts Outlet</Link>
-      <Link to="/offers">Browse Sale</Link>
-      <Link to="/offers">View All Offers</Link>
+    <div className="mega-menu offers-mega-menu">
+      <div className="mega-column">
+        <h4>SAVE</h4>
+        <Link to="/offers">Two pairs for thousand</Link>
+        <Link to="/offers">Clearance Outlet</Link>
+        <Link to="/offers">Boots Sale</Link>
+        <Link to="/offers">View all offers</Link>
+      </div>
     </div>
   </div>
-</div>
 </nav>
 
 

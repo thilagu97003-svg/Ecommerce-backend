@@ -1,0 +1,597 @@
+[
+{
+  "model": "products.product",
+  "pk": 1,
+  "fields": {
+    "name": "Classic red Sneakers",
+    "category": "Womens",
+    "description": "Comfortable red sneakers for everyday wear.",
+    "price": "1499.00",
+    "image": "products/Red_Striped_Canvas_Sneakers.png",
+    "stock": 20,
+    "created_at": "2026-11-02T03:42:23.515Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 2,
+  "fields": {
+    "name": "Comfy Steps White Strap Sandal",
+    "category": "Mens",
+    "description": "Rating: 4/5; Colors: #ffffff, #111111",
+    "price": "1999.00",
+    "image": "products/men1.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.605Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 3,
+  "fields": {
+    "name": "Hush Puppies Tan Boat Shoe",
+    "category": "Mens",
+    "description": "Rating: 5/5; Colors: #b68a5b, #26364a",
+    "price": "2799.00",
+    "image": "products/men2.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.612Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 4,
+  "fields": {
+    "name": "XL Wear Men’s Lace-Up Trainer",
+    "category": "Mens",
+    "description": "Rating: 4/5; Colors: #20243b, #111111",
+    "price": "2799.00",
+    "image": "products/men3.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.619Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 5,
+  "fields": {
+    "name": "Doubal Strap Sandals",
+    "category": "Mens",
+    "description": "Rating: 3/5; Colors: #a66a35, #111111",
+    "price": "1999.00",
+    "image": "products/men4.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.625Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 6,
+  "fields": {
+    "name": "Osaga Blue Lace-Up Trainer",
+    "category": "Mens",
+    "description": "Rating: 4/5; Colors: #27658a, #111111",
+    "price": "2799.00",
+    "image": "products/men5.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.634Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 7,
+  "fields": {
+    "name": "Urban Territory Brown Boots",
+    "category": "Mens",
+    "description": "Rating: 5/5; Colors: #65513f, #111111",
+    "price": "3999.00",
+    "image": "products/men6.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.642Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 8,
+  "fields": {
+    "name": "Men’s Black Leather Loafers",
+    "category": "Mens",
+    "description": "Rating: 4/5; Colors: #111111, #704b45",
+    "price": "2999.00",
+    "image": "products/men7.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.650Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 9,
+  "fields": {
+    "name": "Urban Territory Black Boots",
+    "category": "Mens",
+    "description": "Rating: 5/5; Colors: #111111, #555555",
+    "price": "3999.00",
+    "image": "products/men8.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.661Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 10,
+  "fields": {
+    "name": "Mateo Brown Casual Sneakers",
+    "category": "Mens",
+    "description": "Rating: 3/5; Colors: #65412e, #111111",
+    "price": "2999.00",
+    "image": "products/men9.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.672Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 11,
+  "fields": {
+    "name": "Lamore Tan Leather Loafers",
+    "category": "Mens",
+    "description": "Rating: 4/5; Colors: #b87342, #111111",
+    "price": "3999.00",
+    "image": "products/men10.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.681Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 12,
+  "fields": {
+    "name": "Leather Rhythmic Sandals",
+    "category": "Mens",
+    "description": "Rating: 4/5; Colors: #3b211e, #111111",
+    "price": "2999.00",
+    "image": "products/men11.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.691Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 13,
+  "fields": {
+    "name": "Herfa Hand-Painted Leather Sandals",
+    "category": "Mens",
+    "description": "Rating: 5/5; Colors: #8b542f, #4a3024",
+    "price": "4999.00",
+    "image": "products/men12.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.701Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 14,
+  "fields": {
+    "name": "Lamar Tan Women’s Lace Sandal",
+    "category": "Womens",
+    "description": "Rating: 5/5; Colors: #c49a76, #111111",
+    "price": "2799.00",
+    "image": "products/women1.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.710Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 15,
+  "fields": {
+    "name": "Lilley White Diamante Slip-On Shoe",
+    "category": "Womens",
+    "description": "Rating: 4/5; Colors: #ffffff, #d8c8b8",
+    "price": "2799.00",
+    "image": "products/women2.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.721Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 16,
+  "fields": {
+    "name": "Softlines Navy Sandal",
+    "category": "Womens",
+    "description": "Rating: 3/5; Colors: #203d5b, #111111",
+    "price": "2999.00",
+    "image": "products/women3.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.729Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 17,
+  "fields": {
+    "name": "Shoezone Floral Beach Mule",
+    "category": "Womens",
+    "description": "Rating: 3/5; Colors: #426c9b, #e9b5c7",
+    "price": "2799.00",
+    "image": "products/women4.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.739Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 18,
+  "fields": {
+    "name": "Ophelia Women’s Silver Heel",
+    "category": "Womens",
+    "description": "Rating: 5/5; Colors: #c0c0c0, #d8b6c0",
+    "price": "5999.00",
+    "image": "products/women5.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.750Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 19,
+  "fields": {
+    "name": "Lilley Women’s Patent Shoe",
+    "category": "Womens",
+    "description": "Rating: 4/5; Colors: #222222, #704b45",
+    "price": "3999.00",
+    "image": "products/women6.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.760Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 20,
+  "fields": {
+    "name": "Noelle Mesh Bow Ballerinas",
+    "category": "Womens",
+    "description": "Rating: 3/5; Colors: #33201a, #b99b7d",
+    "price": "3999.00",
+    "image": "products/women7.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.770Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 21,
+  "fields": {
+    "name": "Stella Flat Embellished Slides",
+    "category": "Womens",
+    "description": "Rating: 5/5; Colors: #c8a16b, #ffffff",
+    "price": "1999.00",
+    "image": "products/women8.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.778Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 22,
+  "fields": {
+    "name": "Olivia Pencil Heels",
+    "category": "Womens",
+    "description": "Rating: 4/5; Colors: #111111, #b8a28b",
+    "price": "3999.00",
+    "image": "products/women9.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.788Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 23,
+  "fields": {
+    "name": "Amelia Kitten Heels",
+    "category": "Womens",
+    "description": "Rating: 2/5; Colors: #e6d1a8, #111111",
+    "price": "2999.00",
+    "image": "products/women10.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.796Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 24,
+  "fields": {
+    "name": "Beckett Sandals",
+    "category": "Womens",
+    "description": "Rating: 5/5; Colors: #b9a18a, #ffffff",
+    "price": "2999.00",
+    "image": "products/women11.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.806Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 25,
+  "fields": {
+    "name": "Glamo Flat Black Sandals",
+    "category": "Womens",
+    "description": "Rating: 3/5; Colors: #111111, #c49a76",
+    "price": "1799.00",
+    "image": "products/women12.jpg",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.814Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 26,
+  "fields": {
+    "name": "Whitney Girls White Multi Marble EVA Clog",
+    "category": "Kids",
+    "description": "Rating: 4/5; Colors: #e8b8f0, #ffffff",
+    "price": "2799.00",
+    "image": "products/kids1.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.823Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 27,
+  "fields": {
+    "name": "Walkright Claudia Girls Blue Fasten Canvas",
+    "category": "Kids",
+    "description": "Rating: 4/5; Colors: #6b9cc4, #ffffff",
+    "price": "3199.00",
+    "image": "products/kids2.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.831Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 28,
+  "fields": {
+    "name": "Walkright Girls Pink Polka Dot Canvas",
+    "category": "Kids",
+    "description": "Rating: 5/5; Colors: #f48fb1, #ffffff",
+    "price": "3499.00",
+    "image": "products/kids3.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.841Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 29,
+  "fields": {
+    "name": "Walkright Girls Multi-T Bar Sandal",
+    "category": "Kids",
+    "description": "Rating: 4/5; Colors: #e8c9f4, #ffffff",
+    "price": "4799.00",
+    "image": "products/kids4.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.850Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 30,
+  "fields": {
+    "name": "The Slipper Company Cherish Girls Pink Bootie",
+    "category": "Kids",
+    "description": "Rating: 4/5; Colors: #f5c4e0, #ffffff",
+    "price": "2699.00",
+    "image": "products/kids5.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.858Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 31,
+  "fields": {
+    "name": "LOL Surprise Kids Fasten Slipper",
+    "category": "Kids",
+    "description": "Rating: 5/5; Colors: #ec238c, #ffffff",
+    "price": "2799.00",
+    "image": "products/kids6.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.865Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 32,
+  "fields": {
+    "name": "Bluey Kids Blue Easy Fasten Slipper",
+    "category": "Kids",
+    "description": "Rating: 4/5; Colors: #73b7ed, #ffffff",
+    "price": "4999.00",
+    "image": "products/kids7.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.875Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 33,
+  "fields": {
+    "name": "Spider-Man Kids Red Light Up Trainer",
+    "category": "Kids",
+    "description": "Rating: 5/5; Colors: #18365d, #e53935",
+    "price": "5799.00",
+    "image": "products/kids8.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.884Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 34,
+  "fields": {
+    "name": "Disney Stitch Pink Round Kids EVA Clog",
+    "category": "Kids",
+    "description": "Rating: 4/5; Colors: #c6a9e8, #f5b9d5",
+    "price": "3999.00",
+    "image": "products/kids9.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.891Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 35,
+  "fields": {
+    "name": "Disney Frozen Purple Strap Sandal",
+    "category": "Kids",
+    "description": "Rating: 5/5; Colors: #9b7be0, #ffffff",
+    "price": "5999.00",
+    "image": "products/kids10.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.900Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 36,
+  "fields": {
+    "name": "Shoeszone Short Kids Black Welly Size 1 to 6",
+    "category": "Kids",
+    "description": "Rating: 4/5; Colors: #222222, #555555",
+    "price": "3999.00",
+    "image": "products/kids11.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.909Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 37,
+  "fields": {
+    "name": "Shoeszone Kids Unicorn Welly",
+    "category": "Kids",
+    "description": "Rating: 5/5; Colors: #6d4c9b, #ec8cc4",
+    "price": "3999.00",
+    "image": "products/kids12.png",
+    "stock": 0,
+    "created_at": "2026-11-02T04:21:39.920Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 38,
+  "fields": {
+    "name": "TrailX Men’s Running Sneakers",
+    "category": "Mens",
+    "description": "Rating: 4/5Colors: #17294D, #111111, #A6A6A6",
+    "price": "2499.00",
+    "image": "products/Navy_TrailX_Running_Shoe_Product_Photo.png",
+    "stock": 0,
+    "created_at": "2026-11-02T06:27:39.294Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 41,
+  "fields": {
+    "name": "Test Sneaker",
+    "category": "Mens",
+    "description": "Rating: 4/5; Colors: #17294D, #111111",
+    "price": "1999.00",
+    "image": "products/test_sneaker.png",
+    "stock": 10,
+    "created_at": "2026-11-02T08:24:23.099Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 43,
+  "fields": {
+    "name": "Pinky Star Kids Sneaker",
+    "category": "Kids",
+    "description": "Rating: 4/5; Colors: #ec8cc4, #ffffff",
+    "price": "2599.00",
+    "image": "products/test_kids_shoe.png",
+    "stock": 10,
+    "created_at": "2026-11-02T08:33:59.008Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 45,
+  "fields": {
+    "name": "Urban Runner Pro Sneakers",
+    "category": "Womens",
+    "description": "Lightweight everyday running shoes with breathable mesh and cushioned sole",
+    "price": "1999.00",
+    "image": "products/licensed-image.jpeg",
+    "stock": 20,
+    "created_at": "2026-11-04T17:43:59.625Z"
+  }
+},
+{
+  "model": "products.cart",
+  "pk": 3,
+  "fields": {
+    "customer": 7,
+    "updated_at": "2026-11-03T13:43:48.249Z"
+  }
+},
+{
+  "model": "products.cart",
+  "pk": 4,
+  "fields": {
+    "customer": 9,
+    "updated_at": "2026-11-04T17:21:07.753Z"
+  }
+},
+{
+  "model": "products.cart",
+  "pk": 5,
+  "fields": {
+    "customer": 6,
+    "updated_at": "2026-11-04T16:43:22.285Z"
+  }
+},
+{
+  "model": "products.cart",
+  "pk": 6,
+  "fields": {
+    "customer": 10,
+    "updated_at": "2026-11-04T19:41:29.902Z"
+  }
+},
+{
+  "model": "products.cartitem",
+  "pk": 37,
+  "fields": {
+    "cart": 3,
+    "product": 26,
+    "size": "8",
+    "quantity": 1
+  }
+},
+{
+  "model": "products.cartitem",
+  "pk": 41,
+  "fields": {
+    "cart": 4,
+    "product": 1,
+    "size": "10",
+    "quantity": 2
+  }
+},
+{
+  "model": "products.cartitem",
+  "pk": 42,
+  "fields": {
+    "cart": 4,
+    "product": 16,
+    "size": "9",
+    "quantity": 1
+  }
+}
+]
