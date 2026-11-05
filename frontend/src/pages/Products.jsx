@@ -116,7 +116,9 @@ function Products() {
   }, []);
 
   const filteredProducts = items.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(search);
+    const matchesSearch = product.name
+  .toLowerCase()
+  .includes(search.toLowerCase().trim());
     const matchesCategory = !category || product.category === category;
     return matchesSearch && matchesCategory;
   });
