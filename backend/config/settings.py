@@ -3,6 +3,7 @@ from pathlib import Path
 from datetime import timedelta
 import dj_database_url
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Production la Render environment variable la irundhu varum
