@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'contact',
     'about',
     'home',
+    
 ]
 
 MIDDLEWARE = [
@@ -61,6 +62,7 @@ CSRF_TRUSTED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://shoe-store-frontend-rouge.vercel.app",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SAMESITE = "Lax"
@@ -69,7 +71,9 @@ CSRF_COOKIE_HTTPONLY = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://shoe-store-frontend-rouge.vercel.app",
 ]
+CORS_ALLOW_ALL_ORIGINS = True
 # Render (backend) host configuration
 RENDER_HOST = os.getenv("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_HOST:
