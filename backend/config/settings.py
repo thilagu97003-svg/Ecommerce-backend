@@ -50,8 +50,12 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    o for o in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",") if o
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://shoe-store-frontend-rouge.vercel.app",
+    "https://shoe-store-frontend-1am5zamaz-thilagu97003-svg.vercel.app",
 ]
+
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
