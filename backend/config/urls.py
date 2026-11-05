@@ -12,6 +12,7 @@ from products.views import product_list, add_to_cart, get_cart, remove_cart_item
 from accounts.views import register_user, login_user
 from orders.views import create_order, order_detail
 from django.urls import path, include
+from contact.views import contact_view, csrf_token
 
 
 urlpatterns = [
@@ -36,7 +37,6 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
-    path("api/contact/", include("contact.urls")),
     path("api/contact/", include("contact.urls")),
     path("api/about/", include("about.urls")),
     path("api/home/", include("home.urls")),
