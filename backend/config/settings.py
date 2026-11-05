@@ -50,11 +50,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
+CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:3000",
     "https://shoe-store-frontend-rouge.vercel.app",
     "https://shoe-store-frontend-1am5zamaz-thilagu97003-svg.vercel.app",
+    "https://ecommerce-backend-mgpk.onrender.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
